@@ -1,8 +1,11 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
+import { getCustomPlans } from "../lib/trainingStore";
 import { workouts } from "../mocks/intelligym";
 
 export function WorkoutsPage() {
+  const allPlans = useMemo(() => [...getCustomPlans(), ...workouts], []);
   return (
     <div className="app-page">
       <div className="page-title-row">
@@ -13,7 +16,7 @@ export function WorkoutsPage() {
         <Link className="hero-button" to="/app/gerar-treino">Gerar treino</Link>
       </div>
       <section className="content-grid content-grid--two">
-        {workouts.map((workout) => (
+        {allPlans.map((workout) => (
           <article className="panel-card workout-card" key={workout.id}>
             <span className="hero-pill">{workout.focus}</span>
             <h2>{workout.title}</h2>
@@ -30,4 +33,3 @@ export function WorkoutsPage() {
     </div>
   );
 }
-

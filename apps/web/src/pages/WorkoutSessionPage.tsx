@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { CameraCoach } from "../components/CameraCoach";
+import { getCustomPlans } from "../lib/trainingStore";
 import { workouts } from "../mocks/intelligym";
 
 export function WorkoutSessionPage() {
   const { id } = useParams();
-  const workout = useMemo(() => workouts.find((item) => item.id === id) ?? workouts[0], [id]);
+  const workout = useMemo(() => [...getCustomPlans(), ...workouts].find((item) => item.id === id) ?? workouts[0], [id]);
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [setCount, setSetCount] = useState(1);
   const [showPainModal, setShowPainModal] = useState(false);
@@ -45,13 +47,16 @@ export function WorkoutSessionPage() {
       ) : (
         <section className="session-grid">
           <article className="exercise-stage">
-            <div className="exercise-illustration">{current.name.slice(0, 2).toUpperCase()}</div>
+            <div className="exercise-illustration" aria-label={`Guia visual de ${current.name}`}>
+              <span className="exercise-illustration__figure">●</span><span className="exercise-illustration__bar">↕</span>
+            </div>
             <span className="section-kicker">Exercicio atual</span>
             <h2>{current.name}</h2>
             <p>{current.description}</p>
             <div className="chip-row">
               {current.muscles.map((muscle) => <span className="soft-chip" key={muscle}>{muscle}</span>)}
             </div>
+            <ol className="movement-steps"><li>Prepare a postura e contraia o core.</li><li>Desça ou avance devagar, sem compensar.</li><li>Retorne controlando a respiração.</li></ol>
           </article>
           <aside className="panel-card session-panel">
             <h2>Serie {setCount}/{current.sets}</h2>
@@ -70,6 +75,8 @@ export function WorkoutSessionPage() {
           </aside>
         </section>
       )}
+
+      {!finished ? <CameraCoach exerciseName={current.name} /> : null}
 
       {showPainModal ? (
         <div className="modal-backdrop">
@@ -101,4 +108,3 @@ export function WorkoutSessionPage() {
     </div>
   );
 }
-

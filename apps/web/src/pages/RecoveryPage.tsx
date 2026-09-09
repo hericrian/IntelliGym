@@ -1,9 +1,13 @@
 import { useState } from "react";
 
+import { savePainLog } from "../lib/trainingStore";
 import { painRecords } from "../mocks/intelligym";
 
 export function RecoveryPage() {
   const [message, setMessage] = useState<string | null>(null);
+  const [score, setScore] = useState(2);
+  const [region, setRegion] = useState("Joelho direito");
+  const [trigger, setTrigger] = useState("Step-up acima de 20 cm");
 
   return (
     <div className="app-page">
@@ -15,20 +19,20 @@ export function RecoveryPage() {
       </div>
       <section className="panel-card">
         <p>
-          Contexto inicial informado: ruptura de menisco lateral direito. Isto nao substitui avaliacao profissional nem
-          cria diagnostico novo; serve apenas para adaptar linguagem e intensidade dos mocks.
+          Este registro ajuda a reduzir ou trocar exercícios, mas não diagnostica nem trata lesões. Procure atendimento urgente se houver deformidade, incapacidade de apoiar peso, dor forte após trauma, febre, perda de força/sensibilidade ou inchaço importante.
         </p>
       </section>
       <form
         className="form-grid panel-card"
         onSubmit={(event) => {
           event.preventDefault();
-          setMessage("Registro diario salvo no modo mock.");
+          savePainLog({ score, region, trigger, createdAt: new Date().toISOString() });
+          setMessage(score >= 5 ? "Registro salvo. Como a dor foi moderada/alta, reduza a carga, não force a amplitude e procure um profissional se não melhorar." : "Registro salvo neste dispositivo. Mantenha movimentos lentos e sem piora de sintomas.");
         }}
       >
-        <label className="field"><span>Intensidade da dor</span><input type="range" min="0" max="10" defaultValue="2" /></label>
-        <label className="field"><span>Regiao</span><input defaultValue="Joelho direito" /></label>
-        <label className="field"><span>Movimento que causou desconforto</span><input defaultValue="Step-up acima de 20 cm" /></label>
+        <label className="field"><span>Intensidade da dor: {score}/10</span><input type="range" min="0" max="10" value={score} onChange={(event) => setScore(Number(event.target.value))} /></label>
+        <label className="field"><span>Região</span><input value={region} onChange={(event) => setRegion(event.target.value)} /></label>
+        <label className="field"><span>Movimento que causou desconforto</span><input value={trigger} onChange={(event) => setTrigger(event.target.value)} /></label>
         <label className="field"><span>Mobilidade percebida</span><select defaultValue="melhor"><option value="melhor">Melhor</option><option value="igual">Igual</option><option value="pior">Pior</option></select></label>
         <label className="field field--wide"><span>Observacoes</span><textarea rows={4} defaultValue="Sem travamento, desconforto leve ao subir escadas." /></label>
         <button className="hero-button">Salvar registro</button>
@@ -56,4 +60,3 @@ export function RecoveryPage() {
     </div>
   );
 }
-
