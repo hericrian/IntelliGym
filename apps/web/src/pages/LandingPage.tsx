@@ -161,8 +161,8 @@ export function LandingPage() {
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
               transition={{ duration: 0.72, delay: 0.16, ease: "easeOut" }}
             >
-              Uma base web profissional para casa, academia e recuperacao funcional, hospedada na
-              Vercel e preparada para autenticacao, dados, pagamentos e camera com Firebase.
+              Uma plataforma web profissional para casa, academia e recuperação funcional, entregue globalmente
+              pelo Cloudflare e pronta para autenticação, dados e evolução contínua.
             </motion.p>
             <div className="hero-actions">
               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.985 }}>
@@ -177,8 +177,8 @@ export function LandingPage() {
               </motion.div>
             </div>
             <div className="hero-metrics">
-              <span className="hero-pill">Vercel-ready</span>
-              <span className="hero-pill">Firebase-first</span>
+              <span className="hero-pill">Cloudflare global</span>
+              <span className="hero-pill">PWA instalável</span>
               <span className="hero-pill hero-pill--warning">Fallback sem WebGL</span>
             </div>
           </motion.div>
@@ -240,8 +240,8 @@ export function LandingPage() {
         <div className="feature-grid">
           <article className="feature-card">
             <span className="hero-pill feature-card__label">Frontend</span>
-            <h3>Vercel para entrega rapida e segura</h3>
-            <p>Deploy continuo, CDN global, preview por branch e setup simples para produto real.</p>
+            <h3>Cloudflare para entrega rápida e segura</h3>
+            <p>Deploy contínuo, CDN global, preview por branch e uma base preparada para produto real.</p>
           </article>
           <article className="feature-card">
             <span className="hero-pill feature-card__label">Dados</span>
@@ -253,8 +253,8 @@ export function LandingPage() {
           </article>
           <article className="feature-card">
             <span className="hero-pill feature-card__label">Backend</span>
-            <h3>FastAPI para IA e regras mais pesadas</h3>
-            <p>API isolada para analise de exercicios, integracoes futuras e logica sensivel de negocio.</p>
+            <h3>Workers para API e regras de negócio</h3>
+            <p>API global para gerar treinos, integrações futuras e lógica sensível do produto.</p>
           </article>
         </div>
       </section>

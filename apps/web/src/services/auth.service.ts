@@ -7,6 +7,7 @@ import {
   setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
   signOut,
   updateProfile,
   type User
@@ -54,6 +55,14 @@ export async function loginWithEmail(payload: { email: string; password: string 
 export async function loginWithGoogle(): Promise<void> {
   const auth = requireAuth();
   await ensureSessionPersistence();
+
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(window.navigator.userAgent);
+
+  if (isMobile) {
+    await signInWithRedirect(auth, googleProvider);
+    return;
+  }
+
   const credentials = await signInWithPopup(auth, googleProvider);
   await createUserDocuments({
     uid: credentials.user.uid,

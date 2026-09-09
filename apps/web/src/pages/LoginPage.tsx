@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { AuthCard } from "../components/AuthCard";
+import { hasFirebaseConfig } from "../config/firebase";
 import { useAuth } from "../hooks/useAuth";
 
 export function LoginPage() {
@@ -10,6 +11,7 @@ export function LoginPage() {
   const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const firebaseReady = hasFirebaseConfig();
 
   const redirectTo = (location.state as { from?: string } | null)?.from ?? "/app/dashboard";
 
@@ -37,6 +39,11 @@ export function LoginPage() {
         <span>Senha</span>
         <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" required />
       </label>
+      {!firebaseReady ? (
+        <div className="feedback feedback--warning" role="status">
+          Modo de demonstração ativo. Seus treinos ficam somente neste navegador até o Firebase ser conectado.
+        </div>
+      ) : null}
       {error ? <div className="feedback feedback--error">{error}</div> : null}
       <button className="hero-button" type="submit" disabled={loading}>
         {loading ? "Entrando..." : "Entrar"}
@@ -50,7 +57,7 @@ export function LoginPage() {
           navigate("/app/dashboard", { replace: true });
         }}
       >
-        Continuar com Google
+        {firebaseReady ? "Continuar com Google" : "Experimentar em modo demonstração"}
       </button>
     </AuthCard>
   );

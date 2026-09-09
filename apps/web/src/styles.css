@@ -3,6 +3,7 @@
   font-family: "Segoe UI", system-ui, sans-serif;
   background: #07111a;
   color: #f3f7fb;
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * {
@@ -24,6 +25,15 @@ textarea {
   background: rgba(9, 19, 27, 0.9);
   color: #f3f7fb;
   padding: 14px 16px;
+  transition: border-color 160ms var(--ease-premium), box-shadow 160ms var(--ease-premium), background 160ms var(--ease-premium);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: rgba(112, 240, 197, 0.72);
+  box-shadow: 0 0 0 4px rgba(51, 230, 165, 0.12);
 }
 
 button,
@@ -84,6 +94,7 @@ a {
   border: 1px solid #23384c;
   background: linear-gradient(180deg, rgba(15, 29, 43, 0.96), rgba(11, 20, 30, 1));
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+  animation: card-enter 440ms var(--ease-premium) both;
 }
 
 .auth-header h1 {
@@ -126,6 +137,12 @@ a {
   background: rgba(44, 94, 71, 0.24);
   border: 1px solid rgba(76, 195, 138, 0.24);
   color: #a5efc8;
+}
+
+.feedback--warning {
+  background: rgba(111, 73, 27, 0.22);
+  border: 1px solid rgba(255, 179, 102, 0.3);
+  color: #ffd0a2;
 }
 
 .dashboard-shell {
@@ -284,6 +301,42 @@ a {
   font-size: 0.98rem;
   font-weight: 800;
   box-shadow: 0 14px 34px rgba(51, 230, 165, 0.18);
+  transition: transform 160ms var(--ease-premium), box-shadow 160ms var(--ease-premium), background 160ms var(--ease-premium), border-color 160ms var(--ease-premium);
+}
+
+.hero-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px rgba(51, 230, 165, 0.25);
+}
+
+.hero-button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.hero-button:focus-visible,
+.ghost-button:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(112, 240, 197, 0.82);
+  outline-offset: 3px;
+}
+
+.hero-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
 }
 
 .hero-button--secondary {

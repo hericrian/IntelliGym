@@ -68,7 +68,9 @@ const authErrorMessages: Record<string, string> = {
   "auth/email-already-in-use": "Este e-mail ja esta em uso.",
   "auth/invalid-credential": "E-mail ou senha invalidos.",
   "auth/invalid-email": "Digite um e-mail valido.",
+  "auth/operation-not-allowed": "Este método de login ainda não foi habilitado no Firebase.",
   "auth/popup-closed-by-user": "O login com Google foi interrompido.",
+  "auth/unauthorized-domain": "Este domínio ainda não está autorizado no Firebase Authentication.",
   "auth/too-many-requests": "Muitas tentativas. Tente novamente em instantes.",
   "auth/user-not-found": "Usuario nao encontrado.",
   "auth/weak-password": "A senha precisa ter pelo menos 6 caracteres."
