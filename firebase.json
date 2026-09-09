@@ -1,4 +1,19 @@
 {
+  "auth": {
+    "authorizedDomains": [
+      "localhost",
+      "intelligym.pages.dev",
+      "intelligym-46878.firebaseapp.com",
+      "intelligym-46878.web.app"
+    ],
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "IntelliGym",
+        "supportEmail": "hericrianamf@gmail.com"
+      }
+    }
+  },
   "firestore": {
     "rules": "firebase/firestore.rules",
     "indexes": "firebase/firestore.indexes.json"
