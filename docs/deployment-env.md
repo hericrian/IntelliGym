@@ -1,0 +1,36 @@
+# IntelliGym Deployment Environment
+
+## Vercel frontend
+
+Configure no projeto web:
+
+```env
+VITE_API_URL=https://URL_DA_API
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+VITE_APP_STORE_URL=
+VITE_PLAY_STORE_URL=
+VITE_APP_DOWNLOAD_URL=
+```
+
+## Vercel backend
+
+Configure no projeto da API:
+
+```env
+ENVIRONMENT=production
+FRONTEND_URL=https://URL_DO_FRONTEND
+BACKEND_CORS_ORIGINS=https://URL_DO_FRONTEND
+FIREBASE_PROJECT_ID=
+FIREBASE_CLIENT_EMAIL=
+FIREBASE_PRIVATE_KEY=
+AI_PROVIDER=gemini
+AI_API_KEY=
+AI_MODEL=gemini-2.0-flash
+```
+
+`FIREBASE_PRIVATE_KEY` deve manter as quebras como `\n` quando cadastrada em variável de ambiente.

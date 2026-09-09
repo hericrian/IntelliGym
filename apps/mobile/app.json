@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "IntelliGym",
+    "slug": "intelligym",
+    "scheme": "intelligym",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "@intelligym/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\""
+  },
+  "dependencies": {
+    "@intelligym/shared": "0.1.0",
+    "@react-three/fiber": "9.6.1",
+    "animejs": "4.5.0",
+    "firebase": "^12.1.0",
+    "motion": "12.42.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-router-dom": "^7.7.1",
+    "three": "0.185.1"
+  },
+  "devDependencies": {
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^5.0.0",
+    "vite": "^7.0.6"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "intelligym",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/mobile",
+    "apps/web",
+    "packages/shared"
+  ],
+  "overrides": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-class-static-block": "^7.28.3",
+    "@eslint/js": "^9.31.0",
+    "@types/react": "^19.1.8",
+    "@types/react-native": "^0.73.0",
+    "eslint": "^9.31.0",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.37.0",
+    "vitest": "^3.2.4"
+  },
+  "scripts": {
+    "dev:mobile": "npm --workspace apps/mobile run start",
+    "dev:web": "npm --workspace apps/web run dev",
+    "build:web": "npm --workspace apps/web run build",
+    "dev:api": "C:\\Users\\heric\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -m uvicorn app.main:app --app-dir apps/api --reload --host 0.0.0.0 --port 8000",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present && C:\\Users\\heric\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -m mypy apps/api",
+    "test": "npm run test --workspaces --if-present && C:\\Users\\heric\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -m pytest apps/api/tests",
+    "format:check": "npm run format:check --workspaces --if-present && C:\\Users\\heric\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -m ruff format --check apps/api",
+    "firebase:rules": "firebase deploy --only firestore:rules,storage"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@intelligym/shared",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "format:check": "prettier --check \"src/**/*.ts\""
+  }
+}

@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function hasRole(role) {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    function isPrivileged() {
+      return hasRole('trainer') || hasRole('physiotherapist') || hasRole('admin');
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || hasRole('admin');
+      allow create: if isOwner(userId)
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.role == 'user';
+      allow update: if isOwner(userId)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.role == resource.data.role;
+      allow delete: if hasRole('admin');
+    }
+
+    match /user_profiles/{userId} {
+      allow read, create, update: if isOwner(userId) && request.resource.data.uid == request.auth.uid;
+      allow delete: if hasRole('admin');
+    }
+
+    match /workout_plans/{documentId} {
+      allow read, create, update: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /workout_sessions/{documentId} {
+      allow read, create, update: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    match /pain_records/{documentId} {
+      allow read, create, update: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.intensidade >= 0 &&
+        request.resource.data.intensidade <= 10;
+      allow delete: if false;
+    }
+
+    match /progress_records/{documentId} {
+      allow read, create, update: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    match /ai_conversations/{documentId} {
+      allow read, create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    match /subscriptions/{documentId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow write: if false;
+    }
+
+    match /exercises/{documentId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isPrivileged();
+    }
+
+    match /equipments/{documentId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isPrivileged();
+    }
+
+    match /limitations/{documentId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isPrivileged();
+    }
+  }
+}
