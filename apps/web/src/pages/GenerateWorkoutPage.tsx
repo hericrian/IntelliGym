@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { generateMockWorkout, type WorkoutPlan } from "../mocks/intelligym";
 import { getEquipment, savePlan } from "../lib/trainingStore";
+import { generateWorkoutFromApi } from "../lib/api";
 
 const initialForm = {
   objective: "fortalecimento",
@@ -19,6 +20,7 @@ const initialForm = {
 export function GenerateWorkoutPage() {
   const [form, setForm] = useState(() => ({ ...initialForm, equipment: getEquipment().join(", ") }));
   const [result, setResult] = useState<WorkoutPlan | null>(null);
+  const [apiNotice, setApiNotice] = useState<string | null>(null);
 
   function update(field: keyof typeof form, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -34,9 +36,13 @@ export function GenerateWorkoutPage() {
       </div>
       <form
         className="form-grid panel-card"
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
-          const plan = generateMockWorkout(form);
+          setApiNotice(null);
+          const plan = await generateWorkoutFromApi(form).catch(() => {
+            setApiNotice("A API ficou indisponível; usamos um plano local para você não perder o treino.");
+            return generateMockWorkout(form);
+          });
           savePlan(plan);
           setResult(plan);
         }}
@@ -65,6 +71,8 @@ export function GenerateWorkoutPage() {
         ))}
         <button className="hero-button" type="submit">Gerar treino</button>
       </form>
+
+      {apiNotice ? <p className="feedback feedback--warning">{apiNotice}</p> : null}
 
       {result ? (
         <section className="panel-card generated-plan">
