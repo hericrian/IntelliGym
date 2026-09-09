@@ -12,17 +12,39 @@ const DashboardPage = lazy(async () => {
   return { default: module.AppDashboardPage };
 });
 
-const OnboardingPage = lazy(async () => ({ default: (await import("./pages/OnboardingPage")).OnboardingPage }));
-const WorkoutsPage = lazy(async () => ({ default: (await import("./pages/WorkoutsPage")).WorkoutsPage }));
-const WorkoutSessionPage = lazy(async () => ({ default: (await import("./pages/WorkoutSessionPage")).WorkoutSessionPage }));
-const GenerateWorkoutPage = lazy(async () => ({ default: (await import("./pages/GenerateWorkoutPage")).GenerateWorkoutPage }));
-const ProgressPage = lazy(async () => ({ default: (await import("./pages/ProgressPage")).ProgressPage }));
-const RecoveryPage = lazy(async () => ({ default: (await import("./pages/RecoveryPage")).RecoveryPage }));
-const EquipmentPage = lazy(async () => ({ default: (await import("./pages/EquipmentPage")).EquipmentPage }));
-const AssistantPage = lazy(async () => ({ default: (await import("./pages/AssistantPage")).AssistantPage }));
-const ExerciseLibraryPage = lazy(async () => ({ default: (await import("./pages/ExerciseLibraryPage")).ExerciseLibraryPage }));
-const ProfilePage = lazy(async () => ({ default: (await import("./pages/ProfilePage")).ProfilePage }));
-const SettingsPage = lazy(async () => ({ default: (await import("./pages/SettingsPage")).SettingsPage }));
+const OnboardingPage = lazy(async () => ({
+  default: (await import("./pages/OnboardingPage")).OnboardingPage
+}));
+const WorkoutsPage = lazy(async () => ({
+  default: (await import("./pages/WorkoutsPage")).WorkoutsPage
+}));
+const WorkoutSessionPage = lazy(async () => ({
+  default: (await import("./pages/WorkoutSessionPage")).WorkoutSessionPage
+}));
+const GenerateWorkoutPage = lazy(async () => ({
+  default: (await import("./pages/GenerateWorkoutPage")).GenerateWorkoutPage
+}));
+const ProgressPage = lazy(async () => ({
+  default: (await import("./pages/ProgressPage")).ProgressPage
+}));
+const RecoveryPage = lazy(async () => ({
+  default: (await import("./pages/RecoveryPage")).RecoveryPage
+}));
+const EquipmentPage = lazy(async () => ({
+  default: (await import("./pages/EquipmentPage")).EquipmentPage
+}));
+const AssistantPage = lazy(async () => ({
+  default: (await import("./pages/AssistantPage")).AssistantPage
+}));
+const ExerciseLibraryPage = lazy(async () => ({
+  default: (await import("./pages/ExerciseLibraryPage")).ExerciseLibraryPage
+}));
+const ProfilePage = lazy(async () => ({
+  default: (await import("./pages/ProfilePage")).ProfilePage
+}));
+const SettingsPage = lazy(async () => ({
+  default: (await import("./pages/SettingsPage")).SettingsPage
+}));
 
 const ForgotPasswordPage = lazy(async () => {
   const module = await import("./pages/ForgotPasswordPage");
@@ -64,7 +86,10 @@ export function App() {
                   <Route path="onboarding" element={<OnboardingPage />} />
                   <Route path="treinos" element={<WorkoutsPage />} />
                   <Route path="treino/:id" element={<WorkoutSessionPage />} />
-                  <Route path="gerar-treino" element={<GenerateWorkoutPage />} />
+                  <Route
+                    path="gerar-treino"
+                    element={<GenerateWorkoutPage />}
+                  />
                   <Route path="progresso" element={<ProgressPage />} />
                   <Route path="dor-e-recuperacao" element={<RecoveryPage />} />
                   <Route path="equipamentos" element={<EquipmentPage />} />

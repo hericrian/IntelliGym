@@ -13,7 +13,8 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const firebaseReady = hasFirebaseConfig();
 
-  const redirectTo = (location.state as { from?: string } | null)?.from ?? "/app/dashboard";
+  const redirectTo =
+    (location.state as { from?: string } | null)?.from ?? "/app/dashboard";
 
   return (
     <AuthCard
@@ -33,31 +34,62 @@ export function LoginPage() {
     >
       <label className="field">
         <span>E-mail</span>
-        <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" required />
+        <input
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          type="email"
+          autoComplete="email"
+          required
+        />
       </label>
       <label className="field">
         <span>Senha</span>
-        <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" required />
+        <input
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          type="password"
+          autoComplete="current-password"
+          required
+        />
       </label>
+
       {!firebaseReady ? (
         <div className="feedback feedback--warning" role="status">
-          Modo de demonstração ativo. Seus treinos ficam somente neste navegador até o Firebase ser conectado.
+          Modo de demonstração ativo. Seus treinos ficam somente neste navegador
+          até o Firebase ser conectado.
         </div>
       ) : null}
-      {error ? <div className="feedback feedback--error">{error}</div> : null}
+      {error ? (
+        <div className="feedback feedback--error" role="alert">
+          {error}
+        </div>
+      ) : null}
+
       <button className="hero-button" type="submit" disabled={loading}>
-        {loading ? "Entrando..." : "Entrar"}
+        {loading ? (
+          <>
+            <span className="spinner" aria-hidden="true" />
+            Entrando...
+          </>
+        ) : (
+          "Entrar"
+        )}
       </button>
+
+      <span className="auth-divider">ou</span>
+
       <button
         className="hero-button hero-button--secondary"
         type="button"
         disabled={loading}
         onClick={async () => {
           await signInWithGoogle();
-          navigate("/app/dashboard", { replace: true });
+          navigate(redirectTo, { replace: true });
         }}
       >
-        {firebaseReady ? "Continuar com Google" : "Experimentar em modo demonstração"}
+        {firebaseReady
+          ? "Continuar com Google"
+          : "Experimentar em modo demonstração"}
       </button>
     </AuthCard>
   );

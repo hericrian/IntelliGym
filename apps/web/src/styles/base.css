@@ -1,0 +1,244 @@
+/* =========================================================================
+   Base: reset, tipografia, foco, movimento global
+   ========================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 640;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.021em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(1.75rem, 1.35rem + 1.7vw, 2.6rem);
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: var(--text-xl);
+}
+
+h3 {
+  font-size: var(--text-lg);
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+ul,
+ol {
+  margin: 0;
+}
+
+small {
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* Numeros de metricas, timers e placares nunca devem "dancar". */
+.tabular,
+.metric-card strong,
+.timer-box,
+.stat-value,
+.progress-ring__value {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---- foco visivel: um unico anel, em todo elemento interativo ---------- */
+:focus-visible {
+  outline: 2px solid var(--brand-strong);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* Campos ja tem anel proprio via box-shadow; evita anel duplo. */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
+::selection {
+  background: var(--brand-dim-strong);
+  color: var(--text);
+}
+
+/* Barra de rolagem discreta e coerente com o tema. */
+* {
+  scrollbar-color: var(--border-strong) transparent;
+  scrollbar-width: thin;
+}
+
+/* ---- link "pular para o conteudo" ------------------------------------- */
+.skip-link {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 100;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--brand);
+  color: var(--text-on-brand);
+  font-weight: 640;
+  transform: translateY(calc(-100% - var(--space-4)));
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ---- entradas reutilizaveis -------------------------------------------
+   Movimento fica em custom properties para que prefers-reduced-motion
+   preserve o fade e remova apenas o deslocamento.                         */
+/* O quadro final e explicito de proposito: sem ele o `to` implicito herda o
+   valor do proprio elemento, e um alvo com opacity: 0 (como .reveal > *)
+   terminaria a animacao invisivel. */
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--enter-y));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes enter-scale {
+  from {
+    opacity: 0;
+    transform: scale(var(--enter-scale));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.u-enter {
+  animation: enter-up var(--dur-slow) var(--ease-out) both;
+}
+
+/* Stagger curto (30-80ms) — decorativo, nunca bloqueia interacao. */
+.u-stagger > * {
+  animation: enter-up var(--dur-slow) var(--ease-out) both;
+}
+
+.u-stagger > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.u-stagger > *:nth-child(2) {
+  animation-delay: 45ms;
+}
+.u-stagger > *:nth-child(3) {
+  animation-delay: 90ms;
+}
+.u-stagger > *:nth-child(4) {
+  animation-delay: 135ms;
+}
+.u-stagger > *:nth-child(5) {
+  animation-delay: 180ms;
+}
+.u-stagger > *:nth-child(n + 6) {
+  animation-delay: 210ms;
+}
+
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- movimento reduzido -----------------------------------------------
+   Nao zeramos tudo: fades e cores continuam (ajudam a compreensao),
+   apenas o deslocamento/escala saem (vem dos tokens) e loops param.       */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  .u-stagger > * {
+    animation-delay: 0ms !important;
+  }
+}

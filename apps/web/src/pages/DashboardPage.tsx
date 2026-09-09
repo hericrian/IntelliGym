@@ -38,11 +38,17 @@ export function DashboardPage() {
   const [apiError, setApiError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
-  const [objective, setObjective] = useState<string>(profile?.objetivo ?? "hipertrofia");
+  const [objective, setObjective] = useState<string>(
+    profile?.objetivo ?? "hipertrofia"
+  );
   const [level, setLevel] = useState<string>(profile?.nivel ?? "iniciante");
-  const [location, setLocation] = useState<string>(profile?.localTreino ?? "casa");
+  const [location, setLocation] = useState<string>(
+    profile?.localTreino ?? "casa"
+  );
   const [equipment, setEquipment] = useState("halteres, mini band");
-  const [limitations, setLimitations] = useState(profile?.limitacoes.join(", ") ?? "");
+  const [limitations, setLimitations] = useState(
+    profile?.limitacoes.join(", ") ?? ""
+  );
   const [generatedSummary, setGeneratedSummary] = useState<string | null>(null);
   const [generatedBy, setGeneratedBy] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
@@ -54,7 +60,9 @@ export function DashboardPage() {
   useEffect(() => {
     void Promise.all([
       apiRequest<MeResponse>("/api/me").then(setMe),
-      apiRequest<WorkoutsResponse>("/api/workouts").then((payload) => setWorkouts(payload.workouts))
+      apiRequest<WorkoutsResponse>("/api/workouts").then((payload) =>
+        setWorkouts(payload.workouts)
+      )
     ]).catch((error: Error) => setApiError(error.message));
   }, []);
 
@@ -86,14 +94,20 @@ export function DashboardPage() {
           <span className="hero-pill feature-card__label">Firestore</span>
           <h3>Perfil sincronizado</h3>
           <p>Objetivo atual: {profile?.objetivo ?? "Ainda nao definido"}</p>
-          <button className="hero-button hero-button--secondary" onClick={() => void refreshProfile()}>
+          <button
+            className="hero-button hero-button--secondary"
+            onClick={() => void refreshProfile()}
+          >
             Atualizar perfil
           </button>
         </article>
         <article className="feature-card">
           <span className="hero-pill feature-card__label">Storage</span>
           <h3>Upload de arquivo</h3>
-          <p>{uploadMessage ?? "Envie uma imagem para testar o Firebase Storage."}</p>
+          <p>
+            {uploadMessage ??
+              "Envie uma imagem para testar o Firebase Storage."}
+          </p>
           <input
             type="file"
             accept="image/png,image/jpeg,image/webp"
@@ -114,7 +128,9 @@ export function DashboardPage() {
                 });
                 setUploadMessage(`Upload concluido com sucesso: ${url}`);
               } catch (error) {
-                setUploadMessage(error instanceof Error ? error.message : "Falha no upload.");
+                setUploadMessage(
+                  error instanceof Error ? error.message : "Falha no upload."
+                );
               }
             }}
           />
@@ -122,7 +138,9 @@ export function DashboardPage() {
         </article>
       </section>
 
-      {apiError ? <div className="feedback feedback--error">{apiError}</div> : null}
+      {apiError ? (
+        <div className="feedback feedback--error">{apiError}</div>
+      ) : null}
 
       <section className="section">
         <div className="section-heading">
@@ -137,28 +155,35 @@ export function DashboardPage() {
             setApiError(null);
 
             try {
-              const payload = await apiRequest<GeneratedWorkoutResponse>("/api/workouts/generate", {
-                method: "POST",
-                body: JSON.stringify({
-                  objective,
-                  level,
-                  location,
-                  available_equipment: equipment
-                    .split(",")
-                    .map((item) => item.trim())
-                    .filter(Boolean),
-                  limitations: limitations
-                    .split(",")
-                    .map((item) => item.trim())
-                    .filter(Boolean)
-                })
-              });
+              const payload = await apiRequest<GeneratedWorkoutResponse>(
+                "/api/workouts/generate",
+                {
+                  method: "POST",
+                  body: JSON.stringify({
+                    objective,
+                    level,
+                    location,
+                    available_equipment: equipment
+                      .split(",")
+                      .map((item) => item.trim())
+                      .filter(Boolean),
+                    limitations: limitations
+                      .split(",")
+                      .map((item) => item.trim())
+                      .filter(Boolean)
+                  })
+                }
+              );
 
               setGeneratedSummary(payload.summary);
               setGeneratedBy(payload.generatedBy);
               setWorkouts(payload.workouts);
             } catch (error) {
-              setApiError(error instanceof Error ? error.message : "Nao foi possivel gerar o treino.");
+              setApiError(
+                error instanceof Error
+                  ? error.message
+                  : "Nao foi possivel gerar o treino."
+              );
             } finally {
               setGenerating(false);
             }
@@ -166,7 +191,10 @@ export function DashboardPage() {
         >
           <label className="field">
             <span>Objetivo</span>
-            <select value={objective} onChange={(event) => setObjective(event.target.value)}>
+            <select
+              value={objective}
+              onChange={(event) => setObjective(event.target.value)}
+            >
               <option value="hipertrofia">Hipertrofia</option>
               <option value="emagrecimento">Emagrecimento</option>
               <option value="mobilidade">Mobilidade</option>
@@ -176,7 +204,10 @@ export function DashboardPage() {
           </label>
           <label className="field">
             <span>Nivel</span>
-            <select value={level} onChange={(event) => setLevel(event.target.value)}>
+            <select
+              value={level}
+              onChange={(event) => setLevel(event.target.value)}
+            >
               <option value="iniciante">Iniciante</option>
               <option value="intermediario">Intermediario</option>
               <option value="avancado">Avancado</option>
@@ -184,7 +215,10 @@ export function DashboardPage() {
           </label>
           <label className="field">
             <span>Local</span>
-            <select value={location} onChange={(event) => setLocation(event.target.value)}>
+            <select
+              value={location}
+              onChange={(event) => setLocation(event.target.value)}
+            >
               <option value="casa">Casa</option>
               <option value="academia">Academia</option>
               <option value="hibrido">Hibrido</option>
@@ -192,11 +226,17 @@ export function DashboardPage() {
           </label>
           <label className="field">
             <span>Equipamentos</span>
-            <input value={equipment} onChange={(event) => setEquipment(event.target.value)} />
+            <input
+              value={equipment}
+              onChange={(event) => setEquipment(event.target.value)}
+            />
           </label>
           <label className="field dashboard-form__wide">
             <span>Limitacoes</span>
-            <input value={limitations} onChange={(event) => setLimitations(event.target.value)} />
+            <input
+              value={limitations}
+              onChange={(event) => setLimitations(event.target.value)}
+            />
           </label>
           <button className="hero-button" type="submit" disabled={generating}>
             {generating ? "Gerando..." : "Gerar treino"}
@@ -226,18 +266,29 @@ export function DashboardPage() {
             setApiError(null);
 
             try {
-              const payload = await apiRequest<PainRecordResponse>("/api/pain-records", {
-                method: "POST",
-                body: JSON.stringify({
-                  intensity: painIntensity,
-                  location: painLocation,
-                  notes: painNotes || null
-                })
-              });
+              const payload = await apiRequest<PainRecordResponse>(
+                "/api/pain-records",
+                {
+                  method: "POST",
+                  body: JSON.stringify({
+                    intensity: painIntensity,
+                    location: painLocation,
+                    notes: painNotes || null
+                  })
+                }
+              );
 
-              setPainMessage(payload.saved ? `Registro criado: ${payload.id}` : "Registro nao confirmado.");
+              setPainMessage(
+                payload.saved
+                  ? `Registro criado: ${payload.id}`
+                  : "Registro nao confirmado."
+              );
             } catch (error) {
-              setApiError(error instanceof Error ? error.message : "Nao foi possivel registrar a dor.");
+              setApiError(
+                error instanceof Error
+                  ? error.message
+                  : "Nao foi possivel registrar a dor."
+              );
             }
           }}
         >
@@ -253,17 +304,27 @@ export function DashboardPage() {
           </label>
           <label className="field">
             <span>Local</span>
-            <input value={painLocation} onChange={(event) => setPainLocation(event.target.value)} required />
+            <input
+              value={painLocation}
+              onChange={(event) => setPainLocation(event.target.value)}
+              required
+            />
           </label>
           <label className="field dashboard-form__wide">
             <span>Observacoes</span>
-            <textarea value={painNotes} onChange={(event) => setPainNotes(event.target.value)} rows={3} />
+            <textarea
+              value={painNotes}
+              onChange={(event) => setPainNotes(event.target.value)}
+              rows={3}
+            />
           </label>
           <button className="hero-button hero-button--secondary" type="submit">
             Salvar registro
           </button>
         </form>
-        {painMessage ? <div className="feedback feedback--success">{painMessage}</div> : null}
+        {painMessage ? (
+          <div className="feedback feedback--success">{painMessage}</div>
+        ) : null}
       </section>
 
       <section className="section">
@@ -274,7 +335,9 @@ export function DashboardPage() {
         <div className="feature-grid">
           {workouts.map((workout) => (
             <article className="feature-card" key={workout.id}>
-              <span className="hero-pill feature-card__label">{workout.focus}</span>
+              <span className="hero-pill feature-card__label">
+                {workout.focus}
+              </span>
               <h3>{workout.title}</h3>
               <p>{workout.durationMinutes} minutos</p>
               <p>Equipamentos: {workout.equipment.join(", ")}</p>

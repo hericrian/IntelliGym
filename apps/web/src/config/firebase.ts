@@ -13,10 +13,14 @@ const firebaseConfig = {
 };
 
 export function hasFirebaseConfig(): boolean {
-  return Object.values(firebaseConfig).every((value) => typeof value === "string" && value.length > 0);
+  return Object.values(firebaseConfig).every(
+    (value) => typeof value === "string" && value.length > 0
+  );
 }
 
-export const firebaseApp = hasFirebaseConfig() ? initializeApp(firebaseConfig) : null;
+export const firebaseApp = hasFirebaseConfig()
+  ? initializeApp(firebaseConfig)
+  : null;
 export const firebaseAuth = firebaseApp ? getAuth(firebaseApp) : null;
 export const firestore = firebaseApp ? getFirestore(firebaseApp) : null;
 export const storage = firebaseApp ? getStorage(firebaseApp) : null;

@@ -37,7 +37,11 @@ export async function registerWithEmail(payload: {
 }): Promise<void> {
   const auth = requireAuth();
   await ensureSessionPersistence();
-  const credentials = await createUserWithEmailAndPassword(auth, payload.email, payload.password);
+  const credentials = await createUserWithEmailAndPassword(
+    auth,
+    payload.email,
+    payload.password
+  );
   await updateProfile(credentials.user, { displayName: payload.name });
   await createUserDocuments({
     uid: credentials.user.uid,
@@ -47,9 +51,16 @@ export async function registerWithEmail(payload: {
   });
 }
 
-export async function loginWithEmail(payload: { email: string; password: string }): Promise<void> {
+export async function loginWithEmail(payload: {
+  email: string;
+  password: string;
+}): Promise<void> {
   await ensureSessionPersistence();
-  await signInWithEmailAndPassword(requireAuth(), payload.email, payload.password);
+  await signInWithEmailAndPassword(
+    requireAuth(),
+    payload.email,
+    payload.password
+  );
 }
 
 export async function loginWithGoogle(): Promise<void> {
@@ -80,6 +91,8 @@ export async function logoutUser(): Promise<void> {
   await signOut(requireAuth());
 }
 
-export function subscribeToAuthState(callback: (user: User | null) => void): () => void {
+export function subscribeToAuthState(
+  callback: (user: User | null) => void
+): () => void {
   return onAuthStateChanged(requireAuth(), callback);
 }

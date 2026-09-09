@@ -1,4 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#07111a"/>
-  <path d="M123 337V175h58v162h-58Zm101 0V175h58l67 92v-92h58v162h-58l-67-92v92h-58Z" fill="#70f0c5"/>
+  <defs>
+    <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cfe9ff"/>
+      <stop offset="0.42" stop-color="#4da2ff"/>
+      <stop offset="0.62" stop-color="#0f5fd0"/>
+      <stop offset="1" stop-color="#5fb4ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#04090f"/>
+  <g fill="url(#chrome)">
+    <rect x="60" y="196" width="46" height="120" rx="18"/>
+    <rect x="114" y="164" width="52" height="184" rx="22"/>
+    <rect x="346" y="164" width="52" height="184" rx="22"/>
+    <rect x="406" y="196" width="46" height="120" rx="18"/>
+    <rect x="158" y="230" width="196" height="52" rx="24"/>
+  </g>
 </svg>

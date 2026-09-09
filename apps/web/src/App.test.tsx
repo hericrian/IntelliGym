@@ -11,11 +11,17 @@ describe("web hero support", () => {
 
 describe("device detection", () => {
   it("detects ios devices", () => {
-    expect(detectMobilePlatform("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)")).toBe("ios");
+    expect(
+      detectMobilePlatform(
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)"
+      )
+    ).toBe("ios");
   });
 
   it("detects android devices", () => {
-    expect(detectMobilePlatform("Mozilla/5.0 (Linux; Android 14; Pixel 8)")).toBe("android");
+    expect(
+      detectMobilePlatform("Mozilla/5.0 (Linux; Android 14; Pixel 8)")
+    ).toBe("android");
   });
 
   it("returns desktop when user agent is empty", () => {

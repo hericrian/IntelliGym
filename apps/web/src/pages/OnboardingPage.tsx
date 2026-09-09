@@ -1,47 +1,121 @@
 import { useState } from "react";
-import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 
 const steps = [
-  { key: "goal", title: "Objetivo principal", options: ["Fortalecer com seguranca", "Hipertrofia", "Emagrecimento", "Condicionamento"] },
-  { key: "location", title: "Local de treino", options: ["Casa", "Academia", "Hibrido"] },
-  { key: "equipment", title: "Equipamentos", options: ["Halteres", "Mini band", "Bike", "Maquinas", "Peso corporal"] },
-  { key: "level", title: "Experiencia", options: ["Iniciante", "Intermediario", "Avancado"] },
-  { key: "days", title: "Dias disponiveis", options: ["2 dias", "3 dias", "4 dias", "5 dias"] },
-  { key: "duration", title: "Tempo por treino", options: ["30 min", "45 min", "60 min"] },
-  { key: "limitations", title: "Dores ou limitacoes", options: ["Menisco lateral direito", "Lombar", "Ombro", "Sem limitacoes"] }
+  {
+    key: "goal",
+    title: "Objetivo principal",
+    options: [
+      "Fortalecer com segurança",
+      "Hipertrofia",
+      "Emagrecimento",
+      "Condicionamento"
+    ]
+  },
+  {
+    key: "location",
+    title: "Local de treino",
+    options: ["Casa", "Academia", "Híbrido"]
+  },
+  {
+    key: "equipment",
+    title: "Equipamentos",
+    options: ["Halteres", "Mini band", "Bike", "Máquinas", "Peso corporal"]
+  },
+  {
+    key: "level",
+    title: "Experiência",
+    options: ["Iniciante", "Intermediário", "Avançado"]
+  },
+  {
+    key: "days",
+    title: "Dias disponíveis",
+    options: ["2 dias", "3 dias", "4 dias", "5 dias"]
+  },
+  {
+    key: "duration",
+    title: "Tempo por treino",
+    options: ["30 min", "45 min", "60 min"]
+  },
+  {
+    key: "limitations",
+    title: "Dores ou limitações",
+    options: ["Menisco lateral direito", "Lombar", "Ombro", "Sem limitações"]
+  }
 ] as const;
 
 export function OnboardingPage() {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const navigate = useNavigate();
+
   const step = steps[index];
   const isLast = index === steps.length - 1;
+  const answered = answers[step.key] !== undefined;
 
   return (
     <div className="app-page app-page--center">
-      <motion.section className="onboarding-card" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}>
-        <span className="section-kicker">Onboarding {index + 1}/{steps.length}</span>
-        <h1>{step.title}</h1>
-        <p>Escolha a opcao que melhor representa seu momento. Voce pode ajustar tudo depois no perfil.</p>
-        <div className="option-grid">
-          {step.options.map((option) => (
-            <button
-              className={answers[step.key] === option ? "option-card option-card--active" : "option-card"}
-              key={option}
-              onClick={() => setAnswers((current) => ({ ...current, [step.key]: option }))}
-            >
-              {option}
-            </button>
+      <section className="onboarding-card" aria-labelledby="onboarding-title">
+        <div className="onboarding-progress" aria-hidden="true">
+          {steps.map((item, position) => (
+            <span
+              className={`onboarding-progress__step ${
+                position <= index ? "onboarding-progress__step--done" : ""
+              }`}
+              key={item.key}
+            />
           ))}
         </div>
+
+        <span className="section-kicker">
+          Passo {index + 1} de {steps.length}
+        </span>
+        <h1 id="onboarding-title">{step.title}</h1>
+        <p>
+          Escolha a opção que melhor representa seu momento. Você pode ajustar
+          tudo depois no perfil.
+        </p>
+
+        <div
+          className="option-grid"
+          role="radiogroup"
+          aria-labelledby="onboarding-title"
+        >
+          {step.options.map((option) => {
+            const active = answers[step.key] === option;
+
+            return (
+              <button
+                className={
+                  active ? "option-card option-card--active" : "option-card"
+                }
+                type="button"
+                role="radio"
+                aria-checked={active}
+                key={option}
+                onClick={() =>
+                  setAnswers((current) => ({ ...current, [step.key]: option }))
+                }
+              >
+                {option}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="wizard-footer">
-          <button className="ghost-button" disabled={index === 0} onClick={() => setIndex((value) => value - 1)}>
+          <button
+            className="ghost-button"
+            type="button"
+            disabled={index === 0}
+            onClick={() => setIndex((value) => value - 1)}
+          >
             Voltar
           </button>
           <button
             className="hero-button"
+            type="button"
+            disabled={!answered}
             onClick={() => {
               if (isLast) {
                 navigate("/app/dashboard");
@@ -53,8 +127,7 @@ export function OnboardingPage() {
             {isLast ? "Salvar e entrar" : "Continuar"}
           </button>
         </div>
-      </motion.section>
+      </section>
     </div>
   );
 }
-

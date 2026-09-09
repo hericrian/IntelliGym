@@ -1,5 +1,8 @@
 import { firebaseAuth } from "../config/firebase";
-import type { FirestoreCollections, UserDocument, UserProfileDocument } from "../types/firestore";
+import type {
+  FirestoreCollections,
+  UserProfileDocument
+} from "../types/firestore";
 
 type DataProfile = {
   firebase_uid: string;
@@ -14,7 +17,8 @@ type DataProfile = {
 const dataApiUrl = import.meta.env.VITE_INTELLIGYM_DATA_API_URL;
 
 function requireDataApi() {
-  if (!dataApiUrl) throw new Error("A sincronização de dados ainda não está configurada.");
+  if (!dataApiUrl)
+    throw new Error("A sincronização de dados ainda não está configurada.");
   return dataApiUrl.replace(/\/$/, "");
 }
 
@@ -31,20 +35,35 @@ async function requestProfile(path: string, options: RequestInit = {}) {
     }
   });
 
-  if (!response.ok) throw new Error("Não foi possível sincronizar seus dados agora.");
+  if (!response.ok)
+    throw new Error("Não foi possível sincronizar seus dados agora.");
   return response.json() as Promise<{ profile: DataProfile | null }>;
 }
 
 function toUserProfile(profile: DataProfile): UserProfileDocument {
   return {
-    uid: profile.firebase_uid, nome: profile.display_name, email: profile.email, foto: profile.avatar_url,
-    idade: null, altura: null, peso: null, objetivo: null, nivel: null, localTreino: null,
-    equipamentosDisponiveis: [], diasTreino: [], duracaoPreferida: null, limitacoes: [],
-    createdAt: profile.created_at, updatedAt: profile.updated_at
+    uid: profile.firebase_uid,
+    nome: profile.display_name,
+    email: profile.email,
+    foto: profile.avatar_url,
+    idade: null,
+    altura: null,
+    peso: null,
+    objetivo: null,
+    nivel: null,
+    localTreino: null,
+    equipamentosDisponiveis: [],
+    diasTreino: [],
+    duracaoPreferida: null,
+    limitacoes: [],
+    createdAt: profile.created_at,
+    updatedAt: profile.updated_at
   };
 }
 
-export function getTypedCollection<K extends keyof FirestoreCollections>(_name: K): never {
+export function getTypedCollection<K extends keyof FirestoreCollections>(
+  _name: K
+): never {
   throw new Error("Coleções diretas não são expostas ao navegador.");
 }
 
@@ -56,18 +75,31 @@ export async function createUserDocuments(payload: {
 }): Promise<void> {
   await requestProfile("/profile", {
     method: "PUT",
-    body: JSON.stringify({ displayName: payload.displayName, photoURL: payload.photoURL ?? null, onboardingCompleted: false })
+    body: JSON.stringify({
+      displayName: payload.displayName,
+      photoURL: payload.photoURL ?? null,
+      onboardingCompleted: false
+    })
   });
 }
 
-export async function getUserProfile(_uid: string): Promise<UserProfileDocument | null> {
+export async function getUserProfile(
+  _uid: string
+): Promise<UserProfileDocument | null> {
   const response = await requestProfile("/profile");
   return response.profile ? toUserProfile(response.profile) : null;
 }
 
-export async function updateUserProfile(_uid: string, updates: Partial<UserProfileDocument>): Promise<void> {
+export async function updateUserProfile(
+  _uid: string,
+  updates: Partial<UserProfileDocument>
+): Promise<void> {
   await requestProfile("/profile", {
     method: "PUT",
-    body: JSON.stringify({ displayName: updates.nome, photoURL: updates.foto, onboardingCompleted: false })
+    body: JSON.stringify({
+      displayName: updates.nome,
+      photoURL: updates.foto,
+      onboardingCompleted: false
+    })
   });
 }

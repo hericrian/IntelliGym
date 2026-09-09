@@ -51,7 +51,8 @@ export async function uploadUserFile(params: {
     task.on(
       "state_changed",
       (snapshot: UploadTaskSnapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         params.onProgress?.(Math.round(progress));
       },
       reject,

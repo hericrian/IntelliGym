@@ -25,7 +25,12 @@ module.exports = tseslint.config(
       }
     },
     rules: {
-      "@typescript-eslint/consistent-type-imports": "error"
+      "@typescript-eslint/consistent-type-imports": "error",
+      // Parametros prefixados com _ sao intencionalmente nao usados.
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }
+      ]
     }
   }
 );

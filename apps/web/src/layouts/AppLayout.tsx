@@ -1,84 +1,188 @@
-import { useState } from "react";
-import { motion } from "motion/react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 
+import {
+  IconAssistant,
+  IconClose,
+  IconDashboard,
+  IconEquipment,
+  IconLibrary,
+  IconLogout,
+  IconMenu,
+  IconPlus,
+  IconProfile,
+  IconProgress,
+  IconRecovery,
+  IconSettings,
+  IconSparkles,
+  IconWorkouts
+} from "../components/Icons";
+import { Logo } from "../components/Logo";
 import { useAuth } from "../hooks/useAuth";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
-const navItems = [
-  { to: "/app/dashboard", label: "Dashboard" },
-  { to: "/app/treinos", label: "Treinos" },
-  { to: "/app/gerar-treino", label: "Gerar treino" },
-  { to: "/app/progresso", label: "Progresso" },
-  { to: "/app/dor-e-recuperacao", label: "Dor e recuperacao" },
-  { to: "/app/equipamentos", label: "Equipamentos" },
-  { to: "/app/assistente", label: "Assistente" },
-  { to: "/app/biblioteca", label: "Biblioteca" },
-  { to: "/app/perfil", label: "Perfil" },
-  { to: "/app/configuracoes", label: "Configuracoes" }
+const navGroups = [
+  {
+    label: "Treinar",
+    items: [
+      { to: "/app/dashboard", label: "Dashboard", Icon: IconDashboard },
+      { to: "/app/treinos", label: "Treinos", Icon: IconWorkouts },
+      { to: "/app/gerar-treino", label: "Gerar treino", Icon: IconSparkles },
+      { to: "/app/biblioteca", label: "Biblioteca", Icon: IconLibrary }
+    ]
+  },
+  {
+    label: "Acompanhar",
+    items: [
+      { to: "/app/progresso", label: "Progresso", Icon: IconProgress },
+      {
+        to: "/app/dor-e-recuperacao",
+        label: "Dor e recuperação",
+        Icon: IconRecovery
+      },
+      { to: "/app/assistente", label: "Assistente", Icon: IconAssistant }
+    ]
+  },
+  {
+    label: "Conta",
+    items: [
+      { to: "/app/equipamentos", label: "Equipamentos", Icon: IconEquipment },
+      { to: "/app/perfil", label: "Perfil", Icon: IconProfile },
+      { to: "/app/configuracoes", label: "Configurações", Icon: IconSettings }
+    ]
+  }
 ] as const;
 
 export function AppLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { profile, user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isCompact = useMediaQuery("(max-width: 1180px)");
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const displayName =
+    profile?.nome ?? user?.displayName ?? "Usuário IntelliGym";
+
+  // A gaveta fecha sozinha ao navegar — permanecer aberta sobre a nova tela
+  // seria um estado morto.
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
+
+  const drawerHidden = isCompact && !menuOpen;
 
   return (
     <div className="app-frame">
-      <aside className={`app-sidebar ${menuOpen ? "app-sidebar--open" : ""}`}>
-        <NavLink className="brand-mark" to="/">
-          <span className="brand-mark__icon">IG</span>
-          <span>
-            <strong>IntelliGym</strong>
-            <small>Treine. Evolua. Inteligente.</small>
-          </span>
+      <a className="skip-link" href="#conteudo">
+        Pular para o conteúdo
+      </a>
+
+      <aside
+        className={`app-sidebar ${menuOpen ? "app-sidebar--open" : ""}`}
+        id="navegacao-principal"
+        // Fora da tela a gaveta não pode receber foco por Tab.
+        inert={drawerHidden}
+      >
+        <NavLink className="brand-mark" to="/" aria-label="IntelliGym — início">
+          <Logo height={26} priority />
         </NavLink>
-        <nav className="app-nav" aria-label="Navegacao principal">
-          {navItems.map((item) => (
-            <NavLink
-              className={({ isActive }) => `app-nav__link ${isActive ? "app-nav__link--active" : ""}`}
-              key={item.to}
-              to={item.to}
-              onClick={() => setMenuOpen(false)}
-            >
-              {item.label}
-            </NavLink>
+
+        <nav className="app-nav" aria-label="Navegação principal">
+          {navGroups.map((group) => (
+            <div className="app-nav__group" key={group.label}>
+              <span className="app-nav__group-label">{group.label}</span>
+              {group.items.map(({ to, label, Icon }) => (
+                <NavLink
+                  className={({ isActive }) =>
+                    `app-nav__link ${isActive ? "app-nav__link--active" : ""}`
+                  }
+                  key={to}
+                  to={to}
+                >
+                  <Icon />
+                  {label}
+                </NavLink>
+              ))}
+            </div>
           ))}
         </nav>
+
         <div className="sidebar-card">
-          <span>Plano atual</span>
-          <strong>Free preparado para Premium</strong>
-          <p>Assinaturas entram sem mudar a navegacao principal.</p>
+          <span className="sidebar-card__label">Plano atual</span>
+          <strong>Free, pronto para Premium</strong>
+          <p>Assinaturas entram sem mudar a navegação principal.</p>
         </div>
       </aside>
 
+      {menuOpen && isCompact ? (
+        <button
+          className="app-scrim"
+          type="button"
+          aria-label="Fechar menu"
+          onClick={() => setMenuOpen(false)}
+        />
+      ) : null}
+
       <div className="app-main">
         <header className="app-header">
-          <button className="icon-button app-header__menu" onClick={() => setMenuOpen((value) => !value)}>
-            Menu
+          <button
+            className="icon-button app-header__menu"
+            type="button"
+            ref={menuButtonRef}
+            aria-expanded={menuOpen}
+            aria-controls="navegacao-principal"
+            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+            onClick={() => setMenuOpen((value) => !value)}
+          >
+            {menuOpen ? <IconClose /> : <IconMenu />}
           </button>
-          <div>
-            <span className="section-kicker">Area autenticada</span>
-            <strong>{profile?.nome ?? user?.displayName ?? "Usuario IntelliGym"}</strong>
+
+          <div className="app-header__identity">
+            <span className="section-kicker">Área autenticada</span>
+            <strong>{displayName}</strong>
           </div>
+
           <div className="app-header__actions">
-            <button className="ghost-button" onClick={() => navigate("/app/gerar-treino")}>
-              Novo treino
+            <button
+              className="ghost-button"
+              type="button"
+              onClick={() => navigate("/app/gerar-treino")}
+            >
+              <IconPlus />
+              <span>Novo treino</span>
             </button>
-            <button className="ghost-button" onClick={() => void signOut().then(() => navigate("/"))}>
-              Sair
+            <button
+              className="ghost-button"
+              type="button"
+              onClick={() => void signOut().then(() => navigate("/"))}
+            >
+              <IconLogout />
+              <span>Sair</span>
             </button>
           </div>
         </header>
-        <motion.main
-          className="app-content"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.36, ease: "easeOut" }}
-        >
+
+        {/* Fade curto por rota: só evita o "pulo" do carregamento lazy.
+            Sem deslocamento — navegar é frequente e movimento aqui cansa. */}
+        <main className="app-content" id="conteudo" key={location.pathname}>
           <Outlet />
-        </motion.main>
+        </main>
       </div>
     </div>
   );
 }
-

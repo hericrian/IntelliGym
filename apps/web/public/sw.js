@@ -1,5 +1,5 @@
-const CACHE = "intelligym-v1";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icon.svg"];
+const CACHE = "intelligym-v2";
+const APP_SHELL = ["/", "/manifest.webmanifest", "/icon.svg", "/logo.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(APP_SHELL)));

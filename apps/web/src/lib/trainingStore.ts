@@ -4,7 +4,13 @@ const equipmentKey = "intelligym.equipment";
 const plansKey = "intelligym.customPlans";
 const painKey = "intelligym.painLogs";
 
-export const defaultEquipment = ["Halteres ajustaveis", "Mini band", "Bike ergometrica", "Colchonete", "Banco"];
+export const defaultEquipment = [
+  "Halteres ajustaveis",
+  "Mini band",
+  "Bike ergometrica",
+  "Colchonete",
+  "Banco"
+];
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -36,7 +42,12 @@ export function savePlan(plan: WorkoutPlan) {
   write(plansKey, [plan, ...plans]);
 }
 
-export type PainLog = { score: number; region: string; trigger: string; createdAt: string };
+export type PainLog = {
+  score: number;
+  region: string;
+  trigger: string;
+  createdAt: string;
+};
 
 export function savePainLog(log: PainLog) {
   write(painKey, [log, ...read<PainLog[]>(painKey, [])].slice(0, 30));

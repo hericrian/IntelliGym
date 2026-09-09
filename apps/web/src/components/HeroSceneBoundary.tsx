@@ -9,7 +9,10 @@ type HeroSceneBoundaryState = {
   hasError: boolean;
 };
 
-export class HeroSceneBoundary extends Component<HeroSceneBoundaryProps, HeroSceneBoundaryState> {
+export class HeroSceneBoundary extends Component<
+  HeroSceneBoundaryProps,
+  HeroSceneBoundaryState
+> {
   state: HeroSceneBoundaryState = {
     hasError: false
   };

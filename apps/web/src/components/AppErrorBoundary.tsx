@@ -8,14 +8,20 @@ type AppErrorBoundaryState = {
   message: string | null;
 };
 
-export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorBoundaryState> {
+export class AppErrorBoundary extends Component<
+  AppErrorBoundaryProps,
+  AppErrorBoundaryState
+> {
   state: AppErrorBoundaryState = {
     message: null
   };
 
   static getDerivedStateFromError(error: unknown): AppErrorBoundaryState {
     return {
-      message: error instanceof Error ? error.message : "Erro inesperado ao carregar o IntelliGym."
+      message:
+        error instanceof Error
+          ? error.message
+          : "Erro inesperado ao carregar o IntelliGym."
     };
   }
 
@@ -27,7 +33,10 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
             <span className="section-kicker">IntelliGym</span>
             <h1>Nao foi possivel carregar a interface.</h1>
             <p>{this.state.message}</p>
-            <button className="hero-button" onClick={() => window.location.reload()}>
+            <button
+              className="hero-button"
+              onClick={() => window.location.reload()}
+            >
               Recarregar
             </button>
           </div>

@@ -16,7 +16,10 @@ async function buildHeaders(): Promise<HeadersInit> {
   return headers;
 }
 
-export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
+export async function apiRequest<T>(
+  path: string,
+  init?: RequestInit
+): Promise<T> {
   const response = await fetch(`${apiBaseUrl}${path}`, {
     ...init,
     headers: {
@@ -26,8 +29,12 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
   });
 
   if (!response.ok) {
-    const payload = (await response.json().catch(() => null)) as { detail?: string } | null;
-    throw new Error(payload?.detail ?? "Nao foi possivel concluir a solicitacao.");
+    const payload = (await response.json().catch(() => null)) as {
+      detail?: string;
+    } | null;
+    throw new Error(
+      payload?.detail ?? "Nao foi possivel concluir a solicitacao."
+    );
   }
 
   return (await response.json()) as T;

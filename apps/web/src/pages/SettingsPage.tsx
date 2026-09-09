@@ -3,24 +3,39 @@ export function SettingsPage() {
     <div className="app-page">
       <div className="page-title-row">
         <div>
-          <span className="section-kicker">Configuracoes</span>
-          <h1>Preferencias da plataforma</h1>
+          <span className="section-kicker">Configurações</span>
+          <h1>Preferências da plataforma</h1>
         </div>
       </div>
+
       <section className="content-grid content-grid--two">
         <article className="panel-card">
-          <h2>Notificacoes</h2>
-          <label className="toggle-row"><span>Lembretes de treino</span><input type="checkbox" defaultChecked /></label>
-          <label className="toggle-row"><span>Alertas de recuperacao</span><input type="checkbox" defaultChecked /></label>
+          <h2>Notificações</h2>
+          <div>
+            <label className="toggle-row">
+              <span>Lembretes de treino</span>
+              <input type="checkbox" defaultChecked />
+            </label>
+            <label className="toggle-row">
+              <span>Alertas de recuperação</span>
+              <input type="checkbox" defaultChecked />
+            </label>
+          </div>
         </article>
+
         <article className="panel-card">
           <h2>Privacidade e plano</h2>
-          <p>Firebase Auth, Firestore e Storage entram como fonte real quando as variaveis forem preenchidas.</p>
-          <span className="soft-chip">Plano Free</span>
-          <span className="soft-chip">Premium futuro</span>
+          <p>
+            Autenticação, banco e armazenamento passam a ser a fonte real assim
+            que as variáveis de ambiente forem preenchidas. Até lá, seus dados
+            ficam apenas neste navegador.
+          </p>
+          <ul className="chip-row" aria-label="Planos">
+            <li className="soft-chip">Plano Free</li>
+            <li className="soft-chip">Premium em breve</li>
+          </ul>
         </article>
       </section>
     </div>
   );
 }
-

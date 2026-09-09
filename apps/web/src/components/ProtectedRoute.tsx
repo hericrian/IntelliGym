@@ -1,13 +1,14 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { useAuth } from "../hooks/useAuth";
+import { BootScreen } from "./BootScreen";
 
 export function ProtectedRoute() {
   const { user, loading, initialized } = useAuth();
   const location = useLocation();
 
   if (loading || !initialized) {
-    return <div className="auth-shell">Carregando sua sessao...</div>;
+    return <BootScreen message="Verificando sua sessão." />;
   }
 
   if (!user) {

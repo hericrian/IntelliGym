@@ -1,4 +1,10 @@
-import { createContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode
+} from "react";
 
 import { hasFirebaseConfig } from "../config/firebase";
 import {
@@ -10,7 +16,11 @@ import {
   subscribeToAuthState
 } from "../services/auth.service";
 import { getUserProfile } from "../services/firestore.service";
-import type { AuthContextValue, AuthCredentials, RegisterPayload } from "../types/auth";
+import type {
+  AuthContextValue,
+  AuthCredentials,
+  RegisterPayload
+} from "../types/auth";
 import type { UserProfileDocument } from "../types/firestore";
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -35,7 +45,10 @@ const demoProfile: UserProfileDocument = {
   updatedAt: null
 };
 
-function createDemoUser(email = demoProfile.email, displayName = demoProfile.nome) {
+function createDemoUser(
+  email = demoProfile.email,
+  displayName = demoProfile.nome
+) {
   return {
     uid: "demo-user",
     email,
@@ -46,7 +59,10 @@ function createDemoUser(email = demoProfile.email, displayName = demoProfile.nom
 }
 
 function saveDemoSession(profile: UserProfileDocument) {
-  window.localStorage.setItem(demoSessionKey, JSON.stringify({ email: profile.email, name: profile.nome }));
+  window.localStorage.setItem(
+    demoSessionKey,
+    JSON.stringify({ email: profile.email, name: profile.nome })
+  );
 }
 
 function readDemoSession() {
@@ -68,9 +84,11 @@ const authErrorMessages: Record<string, string> = {
   "auth/email-already-in-use": "Este e-mail ja esta em uso.",
   "auth/invalid-credential": "E-mail ou senha invalidos.",
   "auth/invalid-email": "Digite um e-mail valido.",
-  "auth/operation-not-allowed": "Este método de login ainda não foi habilitado no Firebase.",
+  "auth/operation-not-allowed":
+    "Este método de login ainda não foi habilitado no Firebase.",
   "auth/popup-closed-by-user": "O login com Google foi interrompido.",
-  "auth/unauthorized-domain": "Este domínio ainda não está autorizado no Firebase Authentication.",
+  "auth/unauthorized-domain":
+    "Este domínio ainda não está autorizado no Firebase Authentication.",
   "auth/too-many-requests": "Muitas tentativas. Tente novamente em instantes.",
   "auth/user-not-found": "Usuario nao encontrado.",
   "auth/weak-password": "A senha precisa ter pelo menos 6 caracteres."
@@ -128,7 +146,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (demoSession) {
         setUser(createDemoUser(demoSession.email, demoSession.name));
-        setProfile({ ...demoProfile, email: demoSession.email, nome: demoSession.name });
+        setProfile({
+          ...demoProfile,
+          email: demoSession.email,
+          nome: demoSession.name
+        });
       }
 
       setLoading(false);
@@ -141,7 +163,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setInitialized(true);
 
       if (nextUser) {
-        const nextProfile = await getUserProfile(nextUser.uid).catch(() => null);
+        const nextProfile = await getUserProfile(nextUser.uid).catch(
+          () => null
+        );
         setProfile(nextProfile);
       } else {
         setProfile(null);
@@ -162,7 +186,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       error,
       signUp: async (payload: RegisterPayload) => {
         if (!firebaseEnabled) {
-          const nextProfile = { ...demoProfile, email: payload.email, nome: payload.name };
+          const nextProfile = {
+            ...demoProfile,
+            email: payload.email,
+            nome: payload.name
+          };
           setUser(createDemoUser(payload.email, payload.name));
           setProfile(nextProfile);
           saveDemoSession(nextProfile);
@@ -194,7 +222,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       resetPassword: async (email: string) => {
         if (!firebaseEnabled) {
-          setError(`Modo demo: simulamos o envio de recuperacao para ${email}.`);
+          setError(
+            `Modo demo: simulamos o envio de recuperacao para ${email}.`
+          );
           return;
         }
 

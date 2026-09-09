@@ -25,11 +25,34 @@ export async function generateWorkoutFromApi(input: {
   const response = await fetch(`${apiBaseUrl}/api/workouts/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...input, duration: Number(input.duration), equipment: input.equipment.split(",").map((item) => item.trim()).filter(Boolean) })
+    body: JSON.stringify({
+      ...input,
+      duration: Number(input.duration),
+      equipment: input.equipment
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean)
+    })
   });
 
   if (!response.ok) throw new Error("Não foi possível gerar o plano na API.");
-  const payload = (await response.json()) as { workout: { id: string; title: string; location: string; duration: number; safety: string; warmup: string[]; exercises: Array<{ name: string; sets: number; reps: string; equipment: string[]; cue: string }> } };
+  const payload = (await response.json()) as {
+    workout: {
+      id: string;
+      title: string;
+      location: string;
+      duration: number;
+      safety: string;
+      warmup: string[];
+      exercises: Array<{
+        name: string;
+        sets: number;
+        reps: string;
+        equipment: string[];
+        cue: string;
+      }>;
+    };
+  };
 
   return {
     id: payload.workout.id,
