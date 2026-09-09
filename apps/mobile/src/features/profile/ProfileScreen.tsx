@@ -13,10 +13,14 @@ export function ProfileScreen() {
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Perfil e configuracoes</Text>
 
-      <SectionCard title={`${profile.firstName} · ${profile.age} anos`} subtitle={profile.goal}>
+      <SectionCard
+        title={`${profile.firstName} · ${profile.age} anos`}
+        subtitle={profile.goal}
+      >
         <Text style={styles.body}>
-          {profile.heightCm} cm · {profile.weightKg} kg · {profile.availableDays} dias por
-          semana · {profile.sessionDurationMin} min por treino
+          {profile.heightCm} cm · {profile.weightKg} kg ·{" "}
+          {profile.availableDays} dias por semana · {profile.sessionDurationMin}{" "}
+          min por treino
         </Text>
         <View style={styles.badges}>
           {profile.equipments.map((item) => (
@@ -27,18 +31,28 @@ export function ProfileScreen() {
         </View>
       </SectionCard>
 
-      <SectionCard title="Limitacoes registradas" subtitle="Visiveis para regras de seguranca">
+      <SectionCard
+        title="Limitacoes registradas"
+        subtitle="Visiveis para regras de seguranca"
+      >
         {profile.limitations.map((limitation) => (
-          <View key={`${limitation.bodyRegion}-${limitation.side}`} style={styles.limitBox}>
+          <View
+            key={`${limitation.bodyRegion}-${limitation.side}`}
+            style={styles.limitBox}
+          >
             <Text style={styles.limitTitle}>
-              {limitation.bodyRegion} {limitation.side === "right" ? "direito" : limitation.side}
+              {limitation.bodyRegion}{" "}
+              {limitation.side === "right" ? "direito" : limitation.side}
             </Text>
             <Text style={styles.body}>{limitation.professionalGuidance}</Text>
           </View>
         ))}
       </SectionCard>
 
-      <SectionCard title="Biblioteca inicial" subtitle="Exercicios simulados para o MVP">
+      <SectionCard
+        title="Biblioteca inicial"
+        subtitle="Exercicios simulados para o MVP"
+      >
         {exerciseLibrary.map((exercise) => (
           <View key={exercise.id} style={styles.libraryRow}>
             <Text style={styles.libraryTitle}>{exercise.name}</Text>

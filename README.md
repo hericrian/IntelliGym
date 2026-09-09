@@ -13,25 +13,29 @@ Motivos principais:
 - melhor reaproveitamento com contratos TypeScript e futura integracao com IA;
 - menos risco imediato do que reiniciar o projeto em outra stack sem necessidade comprovada.
 
-Detalhes da decisao: [docs/ADR-002-mobile-platform-decision.md](C:/Users/heric/OneDrive/Documentos/IntelliGym/docs/ADR-002-mobile-platform-decision.md)
+Detalhes da decisao: [docs/ADR-002-mobile-platform-decision.md](docs/ADR-002-mobile-platform-decision.md)
 
 ## Estrutura
 
 ```text
 apps/
-  api/
-  mobile/
+  api/            # FastAPI: rotas, schemas, servicos e integracao Firebase Admin
+  mobile/         # app Expo / React Native
     src/
-      app/        # shell da aplicacao, fluxo raiz e estado global
+      core/       # shell da aplicacao, fluxo raiz e estado global
       data/       # dados simulados e, futuramente, fontes remotas/locais
       domain/     # modelos e regras puras
       features/   # telas e modulos por caso de uso
       ui/         # componentes e tema compartilhados
+  web/            # app Vite + React (build publicado na Vercel)
+    src/
+      components/ contexts/ hooks/ layouts/ lib/ pages/ services/ styles/
+  worker/         # Cloudflare Worker que expoe a API de dados
 packages/
   shared/         # contratos compartilhados entre clientes e API
-docs/
-  ADR-002-mobile-platform-decision.md
-.github/
+firebase/         # regras de Firestore/Storage e indices
+docs/             # ADRs e guias de deploy, auth e roles
+.github/          # workflow de CI
 ```
 
 ## MVP atual
@@ -63,7 +67,7 @@ npm install
 3. Instale as dependencias Python:
 
 ```bash
-C:\Users\heric\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m pip install -r apps/api/requirements.txt
+python -m pip install -r apps/api/requirements.txt
 ```
 
 ## Desenvolvimento

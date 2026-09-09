@@ -12,8 +12,12 @@ def is_ai_configured() -> bool:
 
 
 def build_workout_prompt(payload: WorkoutGenerationRequest) -> str:
-    equipment = ", ".join(payload.available_equipment) if payload.available_equipment else "peso corporal"
-    limitations = ", ".join(payload.limitations) if payload.limitations else "nenhuma limitacao informada"
+    equipment = (
+        ", ".join(payload.available_equipment) if payload.available_equipment else "peso corporal"
+    )
+    limitations = (
+        ", ".join(payload.limitations) if payload.limitations else "nenhuma limitacao informada"
+    )
 
     return (
         "Voce e um assistente de treino do IntelliGym. Gere uma resposta curta, segura e pratica em portugues. "

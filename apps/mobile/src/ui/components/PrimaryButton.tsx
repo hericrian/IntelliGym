@@ -20,7 +20,12 @@ export function PrimaryButton({
         pressed ? styles.pressed : null
       ]}
     >
-      <Text style={[styles.label, variant === "secondary" ? styles.secondaryLabel : null]}>
+      <Text
+        style={[
+          styles.label,
+          variant === "secondary" ? styles.secondaryLabel : null
+        ]}
+      >
         {label}
       </Text>
     </Pressable>

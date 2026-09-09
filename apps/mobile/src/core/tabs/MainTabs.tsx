@@ -53,7 +53,12 @@ export function MainTabs() {
                 tab.id !== "profile" ? styles.tabButtonSpacing : null
               ]}
             >
-              <Text style={[styles.tabLabel, selected ? styles.tabLabelSelected : null]}>
+              <Text
+                style={[
+                  styles.tabLabel,
+                  selected ? styles.tabLabelSelected : null
+                ]}
+              >
                 {tab.label}
               </Text>
             </Pressable>

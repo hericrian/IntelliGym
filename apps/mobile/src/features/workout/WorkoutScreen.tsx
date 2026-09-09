@@ -14,7 +14,8 @@ export function WorkoutScreen() {
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Execucao do treino</Text>
       <Text style={styles.subtitle}>
-        Um exercicio por vez, com espaco para registrar dor, dificuldade e trocas.
+        Um exercicio por vez, com espaco para registrar dor, dificuldade e
+        trocas.
       </Text>
 
       <SectionCard
@@ -25,7 +26,11 @@ export function WorkoutScreen() {
       </SectionCard>
 
       {selectedWorkout.exercises.map((exercise) => (
-        <SectionCard key={exercise.id} title={exercise.name} subtitle={exercise.focus}>
+        <SectionCard
+          key={exercise.id}
+          title={exercise.name}
+          subtitle={exercise.focus}
+        >
           <View style={styles.row}>
             <View style={styles.badgeWrap}>
               <Badge label={`${exercise.sets} series`} />
@@ -38,8 +43,12 @@ export function WorkoutScreen() {
             </View>
           </View>
           <Text style={styles.body}>{exercise.instructions}</Text>
-          <Text style={styles.caption}>Erros comuns: {exercise.commonMistakes.join(", ")}</Text>
-          <Text style={styles.caption}>Alternativa pronta: {exercise.alternatives[0]}</Text>
+          <Text style={styles.caption}>
+            Erros comuns: {exercise.commonMistakes.join(", ")}
+          </Text>
+          <Text style={styles.caption}>
+            Alternativa pronta: {exercise.alternatives[0]}
+          </Text>
           <Text style={styles.safety}>Seguranca: {exercise.safetyNote}</Text>
         </SectionCard>
       ))}
@@ -48,7 +57,11 @@ export function WorkoutScreen() {
         <View style={styles.actionSpacing}>
           <PrimaryButton label="Concluir treino" onPress={() => undefined} />
         </View>
-        <PrimaryButton label="Senti dor" variant="secondary" onPress={() => undefined} />
+        <PrimaryButton
+          label="Senti dor"
+          variant="secondary"
+          onPress={() => undefined}
+        />
       </View>
     </ScrollView>
   );

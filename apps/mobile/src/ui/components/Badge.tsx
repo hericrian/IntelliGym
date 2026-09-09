@@ -10,8 +10,14 @@ export function Badge({
   tone?: "default" | "warning";
 }) {
   return (
-    <View style={[styles.badge, tone === "warning" ? styles.warningBadge : null]}>
-      <Text style={[styles.label, tone === "warning" ? styles.warningLabel : null]}>{label}</Text>
+    <View
+      style={[styles.badge, tone === "warning" ? styles.warningBadge : null]}
+    >
+      <Text
+        style={[styles.label, tone === "warning" ? styles.warningLabel : null]}
+      >
+        {label}
+      </Text>
     </View>
   );
 }

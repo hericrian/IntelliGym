@@ -23,9 +23,13 @@ async def get_current_user(authorization: str | None = Header(default=None)) -> 
     try:
         decoded = verify_firebase_token(token)
     except RuntimeError as error:
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(error)) from error
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(error)
+        ) from error
     except Exception as error:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token Firebase invalido.") from error
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token Firebase invalido."
+        ) from error
 
     return {
         "uid": decoded.get("uid"),

@@ -12,7 +12,11 @@ from .config import get_settings
 def _build_credentials_payload() -> dict[str, Any] | None:
     settings = get_settings()
 
-    if not settings.firebase_project_id or not settings.firebase_client_email or not settings.firebase_private_key:
+    if (
+        not settings.firebase_project_id
+        or not settings.firebase_client_email
+        or not settings.firebase_private_key
+    ):
         return None
 
     return {

@@ -12,14 +12,19 @@ export function ProgressScreen() {
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Progresso</Text>
       <Text style={styles.subtitle}>
-        Evolucao acompanhada por dor, aderencia e fase funcional do retorno ao esporte.
+        Evolucao acompanhada por dor, aderencia e fase funcional do retorno ao
+        esporte.
       </Text>
 
       <StatGrid metrics={progress.metrics} />
 
-      <SectionCard title={progress.currentPhase} subtitle="Fase atual da jornada">
+      <SectionCard
+        title={progress.currentPhase}
+        subtitle="Fase atual da jornada"
+      >
         <Text style={styles.body}>
-          A progressao abaixo orienta o treinamento. Nao representa liberacao medica.
+          A progressao abaixo orienta o treinamento. Nao representa liberacao
+          medica.
         </Text>
         <View style={styles.timeline}>
           {injuryJourney.phases.map((phase) => (

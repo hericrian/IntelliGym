@@ -27,11 +27,11 @@
     "dev:mobile": "npm --workspace apps/mobile run start",
     "dev:web": "npm --workspace apps/web run dev",
     "build:web": "npm --workspace apps/web run build",
-    "dev:api": "C:\\Users\\heric\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -m uvicorn app.main:app --app-dir apps/api --reload --host 0.0.0.0 --port 8000",
+    "dev:api": "python -m uvicorn app.main:app --app-dir apps/api --reload --host 0.0.0.0 --port 8000",
     "lint": "npm run lint --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present && C:\\Users\\heric\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -m mypy apps/api",
-    "test": "npm run test --workspaces --if-present && C:\\Users\\heric\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -m pytest apps/api/tests",
-    "format:check": "npm run format:check --workspaces --if-present && C:\\Users\\heric\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -m ruff format --check apps/api",
+    "typecheck": "npm run typecheck --workspaces --if-present && python -m mypy apps/api",
+    "test": "npm run test --workspaces --if-present && python -m pytest apps/api/tests",
+    "format:check": "npm run format:check --workspaces --if-present && python -m ruff format --check apps/api",
     "firebase:rules": "firebase deploy --only firestore:rules,storage"
   }
 }
