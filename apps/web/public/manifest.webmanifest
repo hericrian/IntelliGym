@@ -1,0 +1,19 @@
+{
+  "name": "IntelliGym",
+  "short_name": "IntelliGym",
+  "description": "A sua plataforma inteligente de treinos.",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#07111a",
+  "theme_color": "#07111a",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
