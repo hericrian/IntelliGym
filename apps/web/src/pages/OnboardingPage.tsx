@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useUserData } from "../hooks/useUserData";
+
 const steps = [
   {
     key: "goal",
@@ -47,7 +49,9 @@ const steps = [
 export function OnboardingPage() {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
+  const { saveProfile, saveEquipment } = useUserData();
 
   const step = steps[index];
   const isLast = index === steps.length - 1;
@@ -115,16 +119,39 @@ export function OnboardingPage() {
           <button
             className="hero-button"
             type="button"
-            disabled={!answered}
-            onClick={() => {
-              if (isLast) {
-                navigate("/app/dashboard");
-              } else {
+            disabled={!answered || saving}
+            onClick={async () => {
+              if (!isLast) {
                 setIndex((value) => value + 1);
+                return;
+              }
+
+              // As respostas viram perfil de verdade: é o que o gerador lê
+              // depois para montar o treino.
+              setSaving(true);
+              try {
+                if (answers.equipment) await saveEquipment([answers.equipment]);
+                await saveProfile({
+                  objetivo: answers.goal ?? null,
+                  localTreino: answers.location ?? null,
+                  nivel: answers.level ?? null,
+                  duracaoPreferida:
+                    Number.parseInt(answers.duration ?? "", 10) || null,
+                  diasTreino: answers.days ? [answers.days] : [],
+                  limitacoes:
+                    answers.limitations &&
+                    answers.limitations !== "Sem limitações"
+                      ? [answers.limitations]
+                      : [],
+                  onboardingDone: true
+                });
+              } finally {
+                setSaving(false);
+                navigate("/app/dashboard");
               }
             }}
           >
-            {isLast ? "Salvar e entrar" : "Continuar"}
+            {saving ? "Salvando..." : isLast ? "Salvar e entrar" : "Continuar"}
           </button>
         </div>
       </section>

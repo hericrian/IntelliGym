@@ -2,18 +2,21 @@
 const logoUrl = "/logo.png";
 
 type LogoProps = {
-  /** "wordmark" usa a arte completa; "compact" mostra só o halter. */
+  /** "wordmark" usa a arte inteira; "compact" enquadra só o halter. */
   variant?: "wordmark" | "compact";
-  /** Altura em px. A largura acompanha a proporção original da arte. */
+  /** Altura em px. A largura acompanha a proporção do enquadramento. */
   height?: number;
   className?: string;
   priority?: boolean;
 };
 
-// Proporção da arte original (640 x 193 após o recorte).
-const RATIO = 640 / 193;
-// O halter ocupa os primeiros ~14% da largura da arte.
-const COMPACT_RATIO = 0.145;
+/* Medidas da arte em public/logo.png (400 × 267). Ficam aqui, num só lugar,
+   para o dia em que a marca for trocada. */
+const ART_RATIO = 400 / 267;
+/** Fração da altura da arte ocupada pelo halter, antes do wordmark começar. */
+const MARK_HEIGHT_FRACTION = 0.655;
+/** O halter usa a largura toda da arte, então o recorte fica largo e baixo. */
+const COMPACT_RATIO = ART_RATIO / MARK_HEIGHT_FRACTION;
 
 export function Logo({
   variant = "wordmark",
@@ -21,25 +24,22 @@ export function Logo({
   className,
   priority
 }: LogoProps) {
-  const width = Math.round(height * RATIO);
-
   if (variant === "compact") {
     return (
       <span
         className={`logo logo--compact ${className ?? ""}`}
-        style={{ width: Math.round(width * COMPACT_RATIO), height }}
         role="img"
         aria-label="IntelliGym"
-      >
-        <img
-          src={logoUrl}
-          alt=""
-          width={width}
-          height={height}
-          decoding="async"
-          loading={priority ? "eager" : "lazy"}
-        />
-      </span>
+        style={{
+          width: Math.round(height * COMPACT_RATIO),
+          height,
+          backgroundImage: `url(${logoUrl})`,
+          // Encaixa a largura da arte na caixa e corta o wordmark embaixo.
+          backgroundSize: "100% auto",
+          backgroundPosition: "top center",
+          backgroundRepeat: "no-repeat"
+        }}
+      />
     );
   }
 
@@ -48,7 +48,7 @@ export function Logo({
       className={`logo ${className ?? ""}`}
       src={logoUrl}
       alt="IntelliGym"
-      width={width}
+      width={Math.round(height * ART_RATIO)}
       height={height}
       decoding="async"
       loading={priority ? "eager" : "lazy"}

@@ -1,10 +1,12 @@
 import { useState } from "react";
 
 import { PainBars } from "../components/PainBars";
-import { savePainLog } from "../lib/trainingStore";
+import { SyncBadge } from "../components/SyncBadge";
+import { useUserData } from "../hooks/useUserData";
 import { painRecords } from "../mocks/intelligym";
 
 export function RecoveryPage() {
+  const { painLogs, savePainLog, syncState } = useUserData();
   const [message, setMessage] = useState<string | null>(null);
   const [score, setScore] = useState(2);
   const [region, setRegion] = useState("Joelho direito");
@@ -16,6 +18,19 @@ export function RecoveryPage() {
 
   const highPain = score >= 5;
 
+  // Enquanto não houver histórico próprio, o gráfico mostra o exemplo — some
+  // assim que o primeiro registro real entra.
+  const chartRecords =
+    painLogs.length > 0
+      ? painLogs.slice(0, 7).map((log) => ({
+          day: new Date(log.createdAt).toLocaleDateString("pt-BR", {
+            weekday: "short"
+          }),
+          after: log.score,
+          note: log.trigger || log.region
+        }))
+      : painRecords;
+
   return (
     <div className="app-page">
       <div className="page-title-row">
@@ -23,6 +38,7 @@ export function RecoveryPage() {
           <span className="section-kicker">Recuperação</span>
           <h1>Dor, mobilidade e retorno gradual</h1>
         </div>
+        <SyncBadge />
       </div>
 
       <section className="panel-card">
@@ -38,7 +54,7 @@ export function RecoveryPage() {
         className="form-grid panel-card"
         onSubmit={(event) => {
           event.preventDefault();
-          savePainLog({
+          void savePainLog({
             score,
             region,
             trigger,
@@ -47,7 +63,9 @@ export function RecoveryPage() {
           setMessage(
             highPain
               ? "Registro salvo. Como a dor foi moderada ou alta, reduza a carga, não force a amplitude e procure um profissional se não melhorar."
-              : "Registro salvo neste dispositivo. Mantenha os movimentos lentos e sem piora dos sintomas."
+              : syncState === "synced"
+                ? "Registro salvo na sua conta. Mantenha os movimentos lentos e sem piora dos sintomas."
+                : "Registro salvo neste aparelho. Sincronizamos assim que houver conexão."
           );
         }}
       >
@@ -115,7 +133,7 @@ export function RecoveryPage() {
       <section className="content-grid content-grid--two">
         <article className="panel-card">
           <h2>Dor pós-treino na semana</h2>
-          <PainBars records={painRecords} showBefore={false} />
+          <PainBars records={chartRecords} showBefore={false} />
         </article>
         <article className="panel-card">
           <h2>Alertas de piora</h2>

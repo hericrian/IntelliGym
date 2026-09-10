@@ -16,6 +16,10 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100dvh;
+  /* Evita o "puxar para atualizar" e o encadeamento de rolagem para o
+     navegador quando o app roda instalado. */
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);

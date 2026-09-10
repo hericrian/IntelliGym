@@ -1,30 +1,26 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { getEquipment, saveEquipment } from "../lib/trainingStore";
+import { SyncBadge } from "../components/SyncBadge";
+import { useUserData } from "../hooks/useUserData";
 
 export function EquipmentPage() {
-  const [items, setItems] = useState(getEquipment);
+  const { equipment, saveEquipment } = useUserData();
   const [next, setNext] = useState("");
 
   function add(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const value = next.trim();
-    if (!value || items.includes(value)) {
-      setNext("");
+    setNext("");
+
+    if (
+      !value ||
+      equipment.some((item) => item.toLowerCase() === value.toLowerCase())
+    ) {
       return;
     }
 
-    const nextItems = [...items, value];
-    setItems(nextItems);
-    saveEquipment(nextItems);
-    setNext("");
-  }
-
-  function remove(item: string) {
-    const nextItems = items.filter((value) => value !== item);
-    setItems(nextItems);
-    saveEquipment(nextItems);
+    void saveEquipment([...equipment, value]);
   }
 
   return (
@@ -37,6 +33,7 @@ export function EquipmentPage() {
             O gerador só sugere exercícios que cabem no que você tem em mãos.
           </p>
         </div>
+        <SyncBadge />
       </div>
 
       <section className="panel-card">
@@ -54,19 +51,23 @@ export function EquipmentPage() {
           </button>
         </form>
 
-        {items.length === 0 ? (
+        {equipment.length === 0 ? (
           <div className="empty-state">
             <strong>Nenhum equipamento cadastrado</strong>
             <p>Sem itens, o gerador monta treinos apenas com peso corporal.</p>
           </div>
         ) : (
           <ul className="chip-row" aria-label="Equipamentos cadastrados">
-            {items.map((item) => (
+            {equipment.map((item) => (
               <li key={item}>
                 <button
                   className="soft-chip soft-chip--button"
                   type="button"
-                  onClick={() => remove(item)}
+                  onClick={() =>
+                    void saveEquipment(
+                      equipment.filter((value) => value !== item)
+                    )
+                  }
                   aria-label={`Remover ${item}`}
                 >
                   {item}
@@ -77,10 +78,7 @@ export function EquipmentPage() {
           </ul>
         )}
 
-        <p className="equipment-note">
-          Toque em um item para removê-lo. O inventário fica salvo neste
-          dispositivo.
-        </p>
+        <p className="equipment-note">Toque em um item para removê-lo.</p>
 
         <Link
           className="hero-button hero-button--secondary"

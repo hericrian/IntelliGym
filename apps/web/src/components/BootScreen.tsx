@@ -15,7 +15,7 @@ export function BootScreen({
     <main className="boot-shell">
       <div className="boot-panel">
         <h1 className="u-visually-hidden">IntelliGym</h1>
-        <Logo height={30} priority />
+        <Logo height={88} priority />
         <p role="status">{message}</p>
         <span className="spinner" aria-hidden="true" />
       </div>

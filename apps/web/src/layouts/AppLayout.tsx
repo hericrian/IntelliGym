@@ -9,6 +9,7 @@ import {
   IconLibrary,
   IconLogout,
   IconMenu,
+  IconMore,
   IconPlus,
   IconProfile,
   IconProgress,
@@ -51,6 +52,18 @@ const navGroups = [
       { to: "/app/configuracoes", label: "Configurações", Icon: IconSettings }
     ]
   }
+] as const;
+
+/**
+ * No celular a mão fica na parte de baixo da tela. Estes quatro destinos
+ * cobrem quase toda a navegação diária; o resto continua na gaveta, que o
+ * botão "Mais" abre.
+ */
+const tabItems = [
+  { to: "/app/dashboard", label: "Hoje", Icon: IconDashboard },
+  { to: "/app/treinos", label: "Treinos", Icon: IconWorkouts },
+  { to: "/app/gerar-treino", label: "Gerar", Icon: IconSparkles },
+  { to: "/app/progresso", label: "Progresso", Icon: IconProgress }
 ] as const;
 
 export function AppLayout() {
@@ -99,7 +112,7 @@ export function AppLayout() {
         inert={drawerHidden}
       >
         <NavLink className="brand-mark" to="/" aria-label="IntelliGym — início">
-          <Logo height={26} priority />
+          <Logo variant="compact" height={30} priority />
         </NavLink>
 
         <nav className="app-nav" aria-label="Navegação principal">
@@ -183,6 +196,31 @@ export function AppLayout() {
           <Outlet />
         </main>
       </div>
+
+      <nav className="tab-bar" aria-label="Navegação rápida">
+        {tabItems.map(({ to, label, Icon }) => (
+          <NavLink
+            className={({ isActive }) =>
+              `tab-bar__link ${isActive ? "tab-bar__link--active" : ""}`
+            }
+            key={to}
+            to={to}
+          >
+            <Icon />
+            {label}
+          </NavLink>
+        ))}
+        <button
+          className={`tab-bar__link ${menuOpen ? "tab-bar__link--active" : ""}`}
+          type="button"
+          aria-expanded={menuOpen}
+          aria-controls="navegacao-principal"
+          onClick={() => setMenuOpen((value) => !value)}
+        >
+          <IconMore />
+          Mais
+        </button>
+      </nav>
     </div>
   );
 }

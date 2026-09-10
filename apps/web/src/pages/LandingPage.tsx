@@ -3,16 +3,15 @@ import { Link } from "react-router-dom";
 
 import type { HealthCheckResponse } from "@intelligym/shared";
 
-import { DownloadBanner } from "../components/DownloadBanner";
+import { InstallBanner } from "../components/InstallBanner";
+import { InstallGuide } from "../components/InstallGuide";
 import { HeroSceneBoundary } from "../components/HeroSceneBoundary";
 import { Logo } from "../components/Logo";
 import { ProgressRing } from "../components/ProgressRing";
 import { StaticHeroFallback } from "../components/StaticHeroFallback";
-import { hasFirebaseConfig } from "../config/firebase";
 import { useInView } from "../hooks/useInView";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { fetchHealth } from "../lib/api";
-import { detectMobilePlatform } from "../lib/device";
 import { supportsWebGL } from "../lib/heroSupport";
 
 const LazyScene = lazy(async () => {
@@ -92,18 +91,6 @@ const progressCards = [
   }
 ];
 
-const appStoreUrl = import.meta.env.VITE_APP_STORE_URL;
-const playStoreUrl = import.meta.env.VITE_PLAY_STORE_URL;
-const appDownloadUrl = import.meta.env.VITE_APP_DOWNLOAD_URL;
-
-function getPrimaryDownloadUrl(
-  platform: ReturnType<typeof detectMobilePlatform>
-) {
-  if (platform === "ios" && appStoreUrl) return appStoreUrl;
-  if (platform === "android" && playStoreUrl) return playStoreUrl;
-  return appDownloadUrl || playStoreUrl || appStoreUrl || null;
-}
-
 /** Seção que revela os cartões ao entrar na viewport, via classe CSS. */
 function RevealGrid({
   children,
@@ -132,16 +119,7 @@ export function LandingPage() {
   );
   const [health, setHealth] = useState<HealthCheckResponse | null>(null);
   const [healthError, setHealthError] = useState<string | null>(null);
-  const [platform, setPlatform] =
-    useState<ReturnType<typeof detectMobilePlatform>>("desktop");
   const [ringsRef, ringsInView] = useInView<HTMLDivElement>();
-
-  const firebaseReady = hasFirebaseConfig();
-  const downloadUrl = getPrimaryDownloadUrl(platform);
-
-  useEffect(() => {
-    setPlatform(detectMobilePlatform(window.navigator.userAgent));
-  }, []);
 
   useEffect(() => {
     void fetchHealth()
@@ -151,9 +129,7 @@ export function LandingPage() {
 
   return (
     <div className="page-shell">
-      {platform !== "desktop" ? (
-        <DownloadBanner platform={platform} downloadUrl={downloadUrl} />
-      ) : null}
+      <InstallBanner />
 
       <main>
         {/* Entrada do hero em CSS: roda fora da main thread, que aqui está
@@ -162,15 +138,14 @@ export function LandingPage() {
           <div className="hero-backdrop" />
           <div className="hero-grid">
             <div className="hero-copy u-stagger">
-              <Logo height={36} priority />
+              <Logo height={112} priority />
               <h1 className="hero-title">
-                Treino inteligente para evoluir com mais segurança e
-                consistência.
+                Seu treino, seu ritmo, sua evolução.
               </h1>
               <p className="hero-description">
-                Uma plataforma web profissional para casa, academia e
-                recuperação funcional, entregue globalmente pelo Cloudflare e
-                pronta para autenticação, dados e evolução contínua.
+                Escolha seus equipamentos, objetivo e rotina. O IntelliGym
+                organiza um plano claro para casa, academia e fortalecimento
+                gradual com mais segurança.
               </p>
               <div className="hero-actions">
                 <Link className="hero-button" to="/signup">
@@ -184,9 +159,9 @@ export function LandingPage() {
                 </Link>
               </div>
               <div className="hero-metrics">
-                <span className="soft-chip">Cloudflare global</span>
-                <span className="soft-chip">PWA instalável</span>
-                <span className="soft-chip">Fallback sem WebGL</span>
+                <span className="soft-chip">Plano adaptativo</span>
+                <span className="soft-chip">Casa ou academia</span>
+                <span className="soft-chip">Acompanhe sua evolução</span>
               </div>
             </div>
 
@@ -202,13 +177,11 @@ export function LandingPage() {
                   <StaticHeroFallback />
                 )}
                 <div className="hero-overlay">
-                  <span className="section-kicker">Experiência premium</span>
-                  <strong>
-                    Hero 3D leve, responsivo e com fallback profissional
-                  </strong>
+                  <span className="section-kicker">Treino em movimento</span>
+                  <strong>Seu programa acompanha o seu momento</strong>
                   <span>
-                    Web forte para crescer agora e uma ponte clara para o app
-                    nativo.
+                    Execute, registre e ajuste cada sessão em uma experiência
+                    simples de seguir.
                   </span>
                 </div>
               </div>
@@ -308,35 +281,10 @@ export function LandingPage() {
           <div className="section-heading">
             <span className="section-kicker">Aplicativo</span>
             <h2 className="section-title">
-              Web forte agora, app nativo quando fizer sentido
+              Instale no celular ou no computador
             </h2>
           </div>
-          <div className="download-card">
-            <div>
-              <strong>Instalação do aplicativo IntelliGym</strong>
-              <p>
-                O site é a porta principal de descoberta e conversão. Quando o
-                usuário abrir no celular, mostramos um convite claro para baixar
-                o app na loja correta.
-              </p>
-            </div>
-            <div className="download-card__actions">
-              {downloadUrl ? (
-                <a className="hero-button" href={downloadUrl}>
-                  Abrir link do app
-                </a>
-              ) : (
-                <button className="hero-button" type="button" disabled>
-                  Link das lojas pendente
-                </button>
-              )}
-              <span className="download-note">
-                {firebaseReady
-                  ? "Firebase configurado no frontend."
-                  : "Firebase ainda precisa das credenciais finais."}
-              </span>
-            </div>
-          </div>
+          <InstallGuide />
         </section>
 
         <section className="section">

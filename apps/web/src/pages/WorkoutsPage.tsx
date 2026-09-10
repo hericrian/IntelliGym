@@ -1,11 +1,12 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
-import { getCustomPlans } from "../lib/trainingStore";
+import { SyncBadge } from "../components/SyncBadge";
+import { useUserData } from "../hooks/useUserData";
 import { workouts } from "../mocks/intelligym";
 
 export function WorkoutsPage() {
-  const customPlans = useMemo(() => getCustomPlans(), []);
+  const { plans: customPlans, removePlan } = useUserData();
   const allPlans = useMemo(() => [...customPlans, ...workouts], [customPlans]);
   const customIds = useMemo(
     () => new Set(customPlans.map((plan) => plan.id)),
@@ -20,9 +21,12 @@ export function WorkoutsPage() {
           <h1>Planos ativos e recomendados</h1>
           <p>Os planos que você gerou aparecem primeiro.</p>
         </div>
-        <Link className="hero-button" to="/app/gerar-treino">
-          Gerar treino
-        </Link>
+        <div className="page-title-row__actions">
+          <SyncBadge />
+          <Link className="hero-button" to="/app/gerar-treino">
+            Gerar treino
+          </Link>
+        </div>
       </div>
 
       <section className="content-grid content-grid--two u-stagger">
@@ -31,7 +35,14 @@ export function WorkoutsPage() {
             <div className="chip-row">
               <span className="hero-pill">{workout.focus}</span>
               {customIds.has(workout.id) ? (
-                <span className="soft-chip">Seu plano</span>
+                <button
+                  className="soft-chip soft-chip--button"
+                  type="button"
+                  onClick={() => void removePlan(workout.id)}
+                  aria-label={`Remover ${workout.title}`}
+                >
+                  Seu plano <span aria-hidden="true">&times;</span>
+                </button>
               ) : null}
             </div>
             <h2>{workout.title}</h2>

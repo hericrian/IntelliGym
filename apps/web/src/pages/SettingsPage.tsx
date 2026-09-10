@@ -1,3 +1,5 @@
+import { InstallGuide } from "../components/InstallGuide";
+
 export function SettingsPage() {
   return (
     <div className="app-page">
@@ -26,6 +28,10 @@ export function SettingsPage() {
         <article className="panel-card">
           <h2>Privacidade e plano</h2>
           <p>
+            O coach de movimento roda inteiramente no seu aparelho: nenhuma
+            imagem da câmera é enviada, gravada ou compartilhada.
+          </p>
+          <p>
             Autenticação, banco e armazenamento passam a ser a fonte real assim
             que as variáveis de ambiente forem preenchidas. Até lá, seus dados
             ficam apenas neste navegador.
@@ -35,6 +41,10 @@ export function SettingsPage() {
             <li className="soft-chip">Premium em breve</li>
           </ul>
         </article>
+      </section>
+
+      <section>
+        <InstallGuide />
       </section>
     </div>
   );

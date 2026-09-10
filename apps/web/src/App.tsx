@@ -5,6 +5,7 @@ import { AppErrorBoundary } from "./components/AppErrorBoundary";
 import { BootScreen } from "./components/BootScreen";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
+import { DataProvider } from "./contexts/DataContext";
 import { AppLayout } from "./layouts/AppLayout";
 
 const DashboardPage = lazy(async () => {
@@ -71,36 +72,50 @@ export function App() {
     <AppErrorBoundary>
       <BrowserRouter>
         <AuthProvider>
-          <Suspense fallback={<BootScreen />}>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
-              <Route path="/cadastro" element={<SignupPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/recuperar-senha" element={<ForgotPasswordPage />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/app" element={<AppLayout />}>
-                  <Route index element={<DashboardPage />} />
-                  <Route path="dashboard" element={<DashboardPage />} />
-                  <Route path="onboarding" element={<OnboardingPage />} />
-                  <Route path="treinos" element={<WorkoutsPage />} />
-                  <Route path="treino/:id" element={<WorkoutSessionPage />} />
-                  <Route
-                    path="gerar-treino"
-                    element={<GenerateWorkoutPage />}
-                  />
-                  <Route path="progresso" element={<ProgressPage />} />
-                  <Route path="dor-e-recuperacao" element={<RecoveryPage />} />
-                  <Route path="equipamentos" element={<EquipmentPage />} />
-                  <Route path="assistente" element={<AssistantPage />} />
-                  <Route path="biblioteca" element={<ExerciseLibraryPage />} />
-                  <Route path="perfil" element={<ProfilePage />} />
-                  <Route path="configuracoes" element={<SettingsPage />} />
+          <DataProvider>
+            <Suspense fallback={<BootScreen />}>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/cadastro" element={<SignupPage />} />
+                <Route
+                  path="/forgot-password"
+                  element={<ForgotPasswordPage />}
+                />
+                <Route
+                  path="/recuperar-senha"
+                  element={<ForgotPasswordPage />}
+                />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/app" element={<AppLayout />}>
+                    <Route index element={<DashboardPage />} />
+                    <Route path="dashboard" element={<DashboardPage />} />
+                    <Route path="onboarding" element={<OnboardingPage />} />
+                    <Route path="treinos" element={<WorkoutsPage />} />
+                    <Route path="treino/:id" element={<WorkoutSessionPage />} />
+                    <Route
+                      path="gerar-treino"
+                      element={<GenerateWorkoutPage />}
+                    />
+                    <Route path="progresso" element={<ProgressPage />} />
+                    <Route
+                      path="dor-e-recuperacao"
+                      element={<RecoveryPage />}
+                    />
+                    <Route path="equipamentos" element={<EquipmentPage />} />
+                    <Route path="assistente" element={<AssistantPage />} />
+                    <Route
+                      path="biblioteca"
+                      element={<ExerciseLibraryPage />}
+                    />
+                    <Route path="perfil" element={<ProfilePage />} />
+                    <Route path="configuracoes" element={<SettingsPage />} />
+                  </Route>
                 </Route>
-              </Route>
-            </Routes>
-          </Suspense>
+              </Routes>
+            </Suspense>
+          </DataProvider>
         </AuthProvider>
       </BrowserRouter>
     </AppErrorBoundary>

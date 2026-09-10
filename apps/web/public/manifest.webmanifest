@@ -1,25 +1,63 @@
 {
-  "name": "IntelliGym",
+  "id": "/?source=pwa",
+  "name": "IntelliGym — Treino inteligente",
   "short_name": "IntelliGym",
-  "description": "A sua plataforma inteligente de treinos.",
+  "description": "Monte treinos para casa ou academia, execute com guia passo a passo e acompanhe dor, carga e evolução.",
   "lang": "pt-BR",
-  "start_url": "/",
+  "dir": "ltr",
+  "start_url": "/app/dashboard?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#04090f",
-  "theme_color": "#04090f",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#08050d",
+  "theme_color": "#08050d",
+  "categories": ["health", "fitness", "lifestyle", "sports"],
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "maskable"
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Iniciar treino de hoje",
+      "short_name": "Treinar",
+      "url": "/app/treinos?source=pwa-shortcut",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Gerar novo treino",
+      "short_name": "Gerar",
+      "url": "/app/gerar-treino?source=pwa-shortcut",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Registrar dor",
+      "short_name": "Dor",
+      "url": "/app/dor-e-recuperacao?source=pwa-shortcut",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

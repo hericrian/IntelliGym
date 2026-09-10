@@ -5,6 +5,7 @@
   "workspaces": [
     "apps/mobile",
     "apps/web",
+    "apps/worker",
     "packages/shared"
   ],
   "overrides": {

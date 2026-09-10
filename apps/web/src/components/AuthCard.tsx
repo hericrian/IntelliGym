@@ -23,7 +23,7 @@ export function AuthCard({
       <form className="auth-card" onSubmit={onSubmit}>
         <div className="auth-header">
           <Link className="brand-mark" to="/" aria-label="IntelliGym — início">
-            <Logo height={26} priority />
+            <Logo variant="compact" height={26} priority />
           </Link>
           <h1>{title}</h1>
           <p>{subtitle}</p>

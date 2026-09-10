@@ -2,13 +2,15 @@ import type { HealthCheckResponse } from "@intelligym/shared";
 
 import type { WorkoutPlan } from "../mocks/intelligym";
 
-const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
+const apiBaseUrl = (
+  import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"
+).replace(/\/$/, "");
 
 export async function fetchHealth(): Promise<HealthCheckResponse> {
   const response = await fetch(`${apiBaseUrl}/health`);
 
   if (!response.ok) {
-    throw new Error("Nao foi possivel consultar a API.");
+    throw new Error("Não foi possível consultar a API.");
   }
 
   return (await response.json()) as HealthCheckResponse;

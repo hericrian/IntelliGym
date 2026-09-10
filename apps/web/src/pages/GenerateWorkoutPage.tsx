@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { SyncBadge } from "../components/SyncBadge";
+import { useUserData } from "../hooks/useUserData";
 import { generateWorkoutFromApi } from "../lib/api";
-import { getEquipment, savePlan } from "../lib/trainingStore";
 import { generateMockWorkout, type WorkoutPlan } from "../mocks/intelligym";
 
 const initialForm = {
@@ -18,10 +19,17 @@ const initialForm = {
 };
 
 export function GenerateWorkoutPage() {
-  const [form, setForm] = useState(() => ({
-    ...initialForm,
-    equipment: getEquipment().join(", ")
-  }));
+  const { equipment, plans, savePlan } = useUserData();
+  const [form, setForm] = useState(() => ({ ...initialForm, equipment: "" }));
+
+  // O inventário chega depois da sincronização; o campo acompanha enquanto a
+  // pessoa não tiver editado nada.
+  const [equipmentTouched, setEquipmentTouched] = useState(false);
+  useEffect(() => {
+    if (!equipmentTouched) {
+      setForm((current) => ({ ...current, equipment: equipment.join(", ") }));
+    }
+  }, [equipment, equipmentTouched]);
   const [result, setResult] = useState<WorkoutPlan | null>(null);
   const [apiNotice, setApiNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -42,7 +50,7 @@ export function GenerateWorkoutPage() {
         );
         return generateMockWorkout(form);
       });
-      savePlan(plan);
+      await savePlan(plan);
       setResult(plan);
     } finally {
       setLoading(false);
@@ -56,9 +64,11 @@ export function GenerateWorkoutPage() {
           <span className="section-kicker">Gerador</span>
           <h1>Criar treino personalizado</h1>
           <p>
-            O plano é salvo neste dispositivo e fica disponível na aba Treinos.
+            O plano fica salvo na sua conta e aparece na aba Treinos
+            {plans.length > 0 ? `, hoje com ${plans.length} plano(s).` : "."}
           </p>
         </div>
+        <SyncBadge />
       </div>
 
       <form className="form-grid panel-card" onSubmit={handleSubmit}>
@@ -68,12 +78,13 @@ export function GenerateWorkoutPage() {
           <button
             type="button"
             className="ghost-button"
-            onClick={() =>
+            onClick={() => {
+              setEquipmentTouched(false);
               setForm((current) => ({
                 ...current,
-                equipment: getEquipment().join(", ")
-              }))
-            }
+                equipment: equipment.join(", ")
+              }));
+            }}
           >
             Atualizar inventário
           </button>
@@ -191,7 +202,7 @@ export function GenerateWorkoutPage() {
 
       {result ? (
         <section className="panel-card generated-plan">
-          <span className="section-kicker">Plano salvo neste dispositivo</span>
+          <span className="section-kicker">Plano salvo</span>
           <h2>{result.title}</h2>
           <p>
             {result.focus} · {result.duration} minutos

@@ -126,3 +126,45 @@ export const IconSearch = (props: SVGProps<SVGSVGElement>) => (
     <path d="M20 20l-4.2-4.2" />
   </Icon>
 );
+
+export const IconDownload = (props: SVGProps<SVGSVGElement>) => (
+  <Icon {...props}>
+    <path d="M12 4v11M7.5 10.5 12 15l4.5-4.5" />
+    <path d="M4.5 17.5v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-1" />
+  </Icon>
+);
+
+export const IconShare = (props: SVGProps<SVGSVGElement>) => (
+  <Icon {...props}>
+    <path d="M12 3v12M8.5 6.5 12 3l3.5 3.5" />
+    <path d="M6 11H5a1.5 1.5 0 0 0-1.5 1.5v7A1.5 1.5 0 0 0 5 21h14a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 19 11h-1" />
+  </Icon>
+);
+
+export const IconCamera = (props: SVGProps<SVGSVGElement>) => (
+  <Icon {...props}>
+    <path d="M4 8.5h2.6l1.3-2h8.2l1.3 2H20a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 20 19.5H4A1.5 1.5 0 0 1 2.5 18v-8A1.5 1.5 0 0 1 4 8.5Z" />
+    <circle cx="12" cy="13.5" r="3.5" />
+  </Icon>
+);
+
+export const IconCheck = (props: SVGProps<SVGSVGElement>) => (
+  <Icon {...props}>
+    <path d="m5 12.5 4.5 4.5L19 7" />
+  </Icon>
+);
+
+export const IconAlert = (props: SVGProps<SVGSVGElement>) => (
+  <Icon {...props}>
+    <path d="M12 4.5 21 20H3l9-15.5Z" />
+    <path d="M12 10.5v4M12 17.5h.01" />
+  </Icon>
+);
+
+export const IconMore = (props: SVGProps<SVGSVGElement>) => (
+  <Icon {...props}>
+    <circle cx="12" cy="5" r="1.4" />
+    <circle cx="12" cy="12" r="1.4" />
+    <circle cx="12" cy="19" r="1.4" />
+  </Icon>
+);

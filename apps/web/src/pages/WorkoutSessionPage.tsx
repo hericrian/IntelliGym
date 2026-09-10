@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { CameraCoach } from "../components/CameraCoach";
+import { FormCoach } from "../components/FormCoach";
 import { Dialog } from "../components/Dialog";
 import { ExerciseFigure } from "../components/ExerciseFigure";
-import { getCustomPlans, savePainLog } from "../lib/trainingStore";
+import { useUserData } from "../hooks/useUserData";
 import { workouts } from "../mocks/intelligym";
 
 function formatClock(totalSeconds: number) {
@@ -15,11 +15,10 @@ function formatClock(totalSeconds: number) {
 
 export function WorkoutSessionPage() {
   const { id } = useParams();
+  const { plans, savePainLog } = useUserData();
   const workout = useMemo(
-    () =>
-      [...getCustomPlans(), ...workouts].find((item) => item.id === id) ??
-      workouts[0],
-    [id]
+    () => [...plans, ...workouts].find((item) => item.id === id) ?? workouts[0],
+    [id, plans]
   );
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [setCount, setSetCount] = useState(1);
@@ -87,7 +86,7 @@ export function WorkoutSessionPage() {
   }
 
   function registerPain(endSession: boolean) {
-    savePainLog({
+    void savePainLog({
       score: painScore,
       region: painRegion,
       trigger: `${current.name} (${painType})`,
@@ -256,7 +255,9 @@ export function WorkoutSessionPage() {
         </section>
       )}
 
-      {!finished ? <CameraCoach exerciseName={current.name} /> : null}
+      {!finished ? (
+        <FormCoach exerciseId={current.id} exerciseName={current.name} />
+      ) : null}
 
       <Dialog
         open={showPainModal}

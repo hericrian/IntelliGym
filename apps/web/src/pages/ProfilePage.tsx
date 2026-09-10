@@ -1,10 +1,54 @@
 import { useState } from "react";
 
+import { SyncBadge } from "../components/SyncBadge";
 import { useAuth } from "../hooks/useAuth";
+import { useUserData } from "../hooks/useUserData";
+import type { StoredProfile } from "../lib/localCache";
+
+/** Campos de lista chegam do formulário como texto separado por vírgula. */
+function toList(value: string) {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function toNumber(value: FormDataEntryValue | null) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && String(value).trim() !== "" ? parsed : null;
+}
 
 export function ProfilePage() {
-  const { profile } = useAuth();
+  const { user } = useAuth();
+  const { profile, saveProfile, syncState } = useUserData();
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+
+    const patch: Partial<StoredProfile> = {
+      nome: String(form.get("nome") ?? "").trim() || null,
+      idade: toNumber(form.get("idade")),
+      altura: toNumber(form.get("altura")),
+      peso: toNumber(form.get("peso")),
+      objetivo: String(form.get("objetivo") ?? "").trim() || null,
+      nivel: String(form.get("nivel") ?? "").trim() || null,
+      localTreino: String(form.get("localTreino") ?? "").trim() || null,
+      duracaoPreferida: toNumber(form.get("duracaoPreferida")),
+      diasTreino: toList(String(form.get("diasTreino") ?? "")),
+      limitacoes: toList(String(form.get("limitacoes") ?? ""))
+    };
+
+    setSaving(true);
+    try {
+      await saveProfile(patch);
+      setSaved(true);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <div className="app-page">
@@ -17,65 +61,91 @@ export function ProfilePage() {
             segurança.
           </p>
         </div>
+        <SyncBadge />
       </div>
 
       <form
         className="form-grid panel-card"
-        onSubmit={(event) => {
-          event.preventDefault();
-          setSaved(true);
-        }}
+        onSubmit={handleSubmit}
+        onChange={() => setSaved(false)}
       >
         <label className="field">
           <span>Nome</span>
-          <input defaultValue={profile?.nome ?? "Heric"} />
+          <input
+            name="nome"
+            defaultValue={profile?.nome ?? user?.displayName ?? ""}
+          />
         </label>
         <label className="field">
-          <span>Foto</span>
-          <input type="file" accept="image/*" />
+          <span>E-mail</span>
+          <input
+            value={profile?.email ?? user?.email ?? ""}
+            readOnly
+            disabled
+          />
         </label>
         <label className="field">
           <span>Idade</span>
           <input
+            name="idade"
             type="number"
             min="12"
             max="100"
-            defaultValue={profile?.idade ?? 31}
+            defaultValue={profile?.idade ?? ""}
           />
         </label>
         <label className="field">
           <span>Altura (cm)</span>
           <input
+            name="altura"
             type="number"
             min="100"
             max="240"
-            defaultValue={profile?.altura ?? 178}
+            defaultValue={profile?.altura ?? ""}
           />
         </label>
         <label className="field">
           <span>Peso (kg)</span>
           <input
+            name="peso"
             type="number"
             min="30"
             max="250"
-            defaultValue={profile?.peso ?? 86}
+            step="0.1"
+            defaultValue={profile?.peso ?? ""}
           />
         </label>
         <label className="field">
           <span>Objetivo</span>
-          <input defaultValue={profile?.objetivo ?? "reabilitação"} />
+          <input
+            name="objetivo"
+            defaultValue={profile?.objetivo ?? ""}
+            placeholder="Ex.: reabilitação"
+          />
         </label>
         <label className="field">
           <span>Nível</span>
-          <input defaultValue={profile?.nivel ?? "intermediário"} />
+          <select name="nivel" defaultValue={profile?.nivel ?? "intermediario"}>
+            <option value="iniciante">Iniciante</option>
+            <option value="intermediario">Intermediário</option>
+            <option value="avancado">Avançado</option>
+          </select>
         </label>
         <label className="field">
           <span>Local de treino</span>
-          <input defaultValue={profile?.localTreino ?? "híbrido"} />
+          <select
+            name="localTreino"
+            defaultValue={profile?.localTreino ?? "hibrido"}
+          >
+            <option value="casa">Casa</option>
+            <option value="academia">Academia</option>
+            <option value="hibrido">Híbrido</option>
+          </select>
         </label>
         <label className="field">
           <span>Tempo por treino (min)</span>
           <input
+            name="duracaoPreferida"
             type="number"
             min="10"
             max="180"
@@ -83,39 +153,40 @@ export function ProfilePage() {
           />
         </label>
         <label className="field field--wide">
-          <span>Equipamentos</span>
-          <input
-            defaultValue={(
-              profile?.equipamentosDisponiveis ?? ["halteres", "mini band"]
-            ).join(", ")}
-          />
-        </label>
-        <label className="field field--wide">
           <span>Dias disponíveis</span>
           <input
-            defaultValue={(
-              profile?.diasTreino ?? ["segunda", "quarta", "sexta"]
-            ).join(", ")}
+            name="diasTreino"
+            defaultValue={(profile?.diasTreino ?? []).join(", ")}
+            placeholder="segunda, quarta, sexta"
           />
         </label>
         <label className="field field--wide">
           <span>Dores e limitações</span>
           <textarea
-            rows={4}
-            defaultValue={(
-              profile?.limitacoes ?? ["menisco lateral direito"]
-            ).join(", ")}
+            name="limitacoes"
+            rows={3}
+            defaultValue={(profile?.limitacoes ?? []).join(", ")}
+            placeholder="menisco lateral direito, lombar"
           />
         </label>
 
-        <button className="hero-button" type="submit">
-          Salvar perfil
+        <button className="hero-button" type="submit" disabled={saving}>
+          {saving ? (
+            <>
+              <span className="spinner" aria-hidden="true" />
+              Salvando...
+            </>
+          ) : (
+            "Salvar perfil"
+          )}
         </button>
       </form>
 
       {saved ? (
         <div className="feedback feedback--success" role="status">
-          Perfil salvo neste dispositivo.
+          {syncState === "synced"
+            ? "Perfil salvo na sua conta."
+            : "Perfil salvo neste aparelho. Sincronizamos assim que houver conexão."}
         </div>
       ) : null}
     </div>

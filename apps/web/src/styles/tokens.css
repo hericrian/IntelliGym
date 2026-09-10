@@ -1,47 +1,47 @@
 /* =========================================================================
    IntelliGym — design tokens
-   Identidade tirada do logo: azul eletrico cromado sobre quase-preto.
-   Dourado fica como acento de conquista/progresso.
+   Identidade tirada do logo: roxo energético e branco sobre quase-preto.
+   O dourado anterior foi removido para a marca permanecer coesa.
    ========================================================================= */
 
 :root {
   color-scheme: dark;
 
   /* ---- superficies ----------------------------------------------------
-     Fundo quase preto de proposito: e sobre ele que o azul do logo brilha. */
-  --bg: #04090f;
-  --bg-elevated: #070e17;
-  --surface-1: #0a131e;
-  --surface-2: #0f1c2a;
-  --surface-3: #152536;
-  --surface-hover: rgba(140, 190, 235, 0.06);
-  --scrim: rgba(1, 5, 9, 0.7);
+     Fundo quase preto de proposito: e sobre ele que o roxo do logo ganha contraste. */
+  --bg: #08050d;
+  --bg-elevated: #0d0914;
+  --surface-1: #130d1d;
+  --surface-2: #1a1028;
+  --surface-3: #241536;
+  --surface-hover: rgba(190, 154, 255, 0.07);
+  --scrim: rgba(5, 2, 9, 0.74);
 
   /* ---- bordas --------------------------------------------------------- */
-  --border-subtle: rgba(140, 190, 235, 0.09);
-  --border: rgba(140, 190, 235, 0.15);
-  --border-strong: rgba(140, 190, 235, 0.27);
+  --border-subtle: rgba(202, 175, 255, 0.1);
+  --border: rgba(202, 175, 255, 0.16);
+  --border-strong: rgba(202, 175, 255, 0.28);
 
   /* ---- texto ---------------------------------------------------------- */
-  --text: #edf3fa;
-  --text-secondary: #a2b6cb;
-  --text-muted: #778da3;
-  --text-on-brand: #03101d;
-  --text-on-accent: #1d1305;
+  --text: #fbf9ff;
+  --text-secondary: #c8bed6;
+  --text-muted: #968ca6;
+  --text-on-brand: #ffffff;
+  --text-on-accent: #ffffff;
 
-  /* ---- marca (azul eletrico do logo) ---------------------------------- */
-  --brand: #3d9bff;
-  --brand-hover: #5aacff;
-  --brand-strong: #8fc6ff;
-  --brand-dim: rgba(61, 155, 255, 0.13);
-  --brand-dim-strong: rgba(61, 155, 255, 0.21);
-  --brand-border: rgba(61, 155, 255, 0.32);
+  /* ---- marca (roxo eletrico do logo) ---------------------------------- */
+  --brand: #7a3ee1;
+  --brand-hover: #9564f0;
+  --brand-strong: #cdb6ff;
+  --brand-dim: rgba(122, 62, 225, 0.16);
+  --brand-dim-strong: rgba(122, 62, 225, 0.27);
+  --brand-border: rgba(158, 111, 240, 0.42);
 
-  /* ---- acento (dourado: conquistas, streaks, premium) ----------------- */
-  --accent: #e8b877;
-  --accent-strong: #f4d38c;
-  --accent-dim: rgba(232, 184, 119, 0.12);
-  --accent-border: rgba(232, 184, 119, 0.26);
+  /* ---- acento (lilás: conquistas, streaks, premium) ------------------- */
+  --accent: #ad7bff;
+  --accent-strong: #dac8ff;
+  --accent-dim: rgba(173, 123, 255, 0.15);
+  --accent-border: rgba(173, 123, 255, 0.32);
 
   /* ---- semantico ------------------------------------------------------ */
   --danger: #ff8b9c;
@@ -55,9 +55,9 @@
   --success-border: var(--brand-border);
 
   /* ---- dados (graficos) ----------------------------------------------- */
-  --data-before: #e8b877;
-  --data-after: #3d9bff;
-  --data-track: rgba(140, 190, 235, 0.12);
+  --data-before: #ad7bff;
+  --data-after: #7a3ee1;
+  --data-track: rgba(202, 175, 255, 0.14);
 
   /* ---- espacamento (base 4px) ----------------------------------------- */
   --space-1: 0.25rem;
@@ -84,7 +84,7 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 6px 20px -6px rgba(0, 0, 0, 0.55);
   --shadow-lg: 0 20px 56px -16px rgba(0, 0, 0, 0.7);
-  --shadow-brand: 0 8px 26px -10px rgba(61, 155, 255, 0.6);
+  --shadow-brand: 0 10px 28px -11px rgba(122, 62, 225, 0.68);
 
   /* ---- tipografia ----------------------------------------------------- */
   --font-sans:

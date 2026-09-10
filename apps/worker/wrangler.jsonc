@@ -4,5 +4,23 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-09-09",
   "compatibility_flags": ["nodejs_compat"],
-  "observability": { "enabled": true, "head_sampling_rate": 1 }
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+
+  // Banco de dados. Crie com:
+  //   npx wrangler d1 create intelligym
+  // e cole o database_id devolvido pelo comando.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "intelligym",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Projeto do Firebase usado para validar o ID token. Não é segredo:
+  // aparece no bundle do frontend também.
+  "vars": {
+    "FIREBASE_PROJECT_ID": ""
+  }
 }

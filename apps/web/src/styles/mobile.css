@@ -1,0 +1,312 @@
+/* =========================================================================
+   Mobile e PWA: barra inferior, áreas seguras e convites de instalação
+   ========================================================================= */
+
+:root {
+  /* Recuos do notch / barra de gestos. Zero em telas que não têm. */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --tabbar-h: 60px;
+}
+
+/* ---- barra de abas inferior --------------------------------------------
+   No celular a mão fica embaixo. A gaveta continua existindo para o resto
+   da navegação, mas os quatro destinos mais usados ficam sempre à mão.     */
+.tab-bar {
+  display: none;
+}
+
+@media (max-width: 1180px) {
+  .tab-bar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 30;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2)
+      calc(var(--space-1) + var(--safe-bottom));
+    border-top: 1px solid var(--border-subtle);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(18px);
+  }
+
+  /* O conteúdo precisa terminar acima da barra, senão o último cartão
+     fica escondido sob ela. */
+  .app-content {
+    padding-bottom: calc(var(--tabbar-h) + var(--safe-bottom) + var(--space-7));
+  }
+
+  .app-frame {
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+  }
+
+  .app-header {
+    padding-top: calc(var(--space-3) + var(--safe-top));
+  }
+
+  /* O botão "Mais" da barra inferior já abre a gaveta; um hambúrguer no topo
+     seria o mesmo controle duas vezes na mesma tela. */
+  .icon-button.app-header__menu {
+    display: none;
+  }
+
+  .app-sidebar {
+    padding-top: calc(var(--space-5) + var(--safe-top));
+    padding-bottom: calc(var(--space-5) + var(--safe-bottom));
+  }
+}
+
+.tab-bar__link {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  min-height: 52px;
+  padding: var(--space-1);
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 560;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  /* Sem movimento: é o controle mais tocado do app. Só cor. */
+  transition: color var(--dur-fast) var(--ease-hover);
+}
+
+.tab-bar__link svg {
+  width: 22px;
+  height: 22px;
+}
+
+.tab-bar__link--active {
+  color: var(--brand-strong);
+}
+
+.tab-bar__link:active {
+  background: var(--surface-hover);
+}
+
+/* ---- convite flutuante de instalação ----------------------------------- */
+.install-banner {
+  position: sticky;
+  top: var(--space-3);
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: var(--shell-max);
+  margin: 0 auto var(--space-5);
+  padding: var(--space-3);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface-2) 92%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-lg);
+  animation: enter-up var(--dur-slow) var(--ease-out) both;
+}
+
+.install-banner img {
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+}
+
+.install-banner__copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  margin-right: auto;
+}
+
+.install-banner__copy strong {
+  font-size: var(--text-base);
+  font-weight: 620;
+}
+
+.install-banner__copy span {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+.install-banner .icon-button.install-banner__close {
+  flex-shrink: 0;
+  width: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border-color: transparent;
+}
+
+@media (max-width: 620px) {
+  .install-banner {
+    flex-wrap: wrap;
+  }
+
+  .install-banner__copy {
+    flex: 1 1 60%;
+  }
+
+  .install-banner .hero-button {
+    flex: 1 1 100%;
+    order: 3;
+  }
+}
+
+/* ---- guia de instalação -------------------------------------------------- */
+.install-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(var(--space-5), 4vw, var(--space-8));
+  padding: clamp(var(--space-5), 3vw, var(--space-7));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(600px 300px at 0% 0%, var(--brand-dim), transparent 70%),
+    var(--surface-1);
+}
+
+.install-card--done {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: var(--space-3);
+}
+
+.install-card h3 {
+  margin: 0;
+  font-size: var(--text-xl);
+}
+
+.install-card__intro {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+}
+
+.install-card__intro .hero-button {
+  justify-self: start;
+}
+
+.install-benefits {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-secondary);
+}
+
+.install-benefits li {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-2);
+  line-height: var(--leading-snug);
+}
+
+.install-benefits svg {
+  margin-top: 2px;
+  color: var(--brand-strong);
+}
+
+.install-card__steps {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+}
+
+/* ---- seletor segmentado --------------------------------------------------- */
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+}
+
+.segmented__item {
+  min-height: 38px;
+  padding: 0 var(--space-2);
+  border: none;
+  border-radius: calc(var(--radius-md) - 4px);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 560;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-hover),
+    color var(--dur-fast) var(--ease-hover);
+}
+
+.segmented__item--active {
+  background: var(--brand-dim-strong);
+  color: var(--brand-strong);
+  font-weight: 620;
+}
+
+/* ---- passo a passo -------------------------------------------------------- */
+.install-steps {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.install-steps li {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-3);
+  color: var(--text-secondary);
+  line-height: var(--leading-snug);
+}
+
+.install-steps li strong {
+  color: var(--text);
+  font-weight: 620;
+}
+
+.install-steps__index {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--brand-dim);
+  color: var(--brand-strong);
+  font-size: var(--text-sm);
+  font-weight: 640;
+}
+
+@media (max-width: 860px) {
+  .install-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- ajustes finos de toque ----------------------------------------------- */
+@media (pointer: coarse) {
+  /* Alvos de toque nunca abaixo de 44px. */
+  .soft-chip--button,
+  .week-day,
+  .text-link {
+    min-height: 44px;
+  }
+
+  .segmented__item {
+    min-height: 44px;
+  }
+}

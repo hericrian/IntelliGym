@@ -33,7 +33,7 @@ function Rig() {
       <mesh ref={torsoRef} position={[0, 0.18, 0]}>
         <capsuleGeometry args={[0.68, 2.05, 12, 20]} />
         <meshStandardMaterial
-          color="#c8dcf0"
+          color="#eee9f8"
           metalness={0.72}
           roughness={0.16}
         />
@@ -41,7 +41,7 @@ function Rig() {
       <mesh position={[0, 1.72, 0]}>
         <sphereGeometry args={[0.42, 24, 24]} />
         <meshStandardMaterial
-          color="#dceaf8"
+          color="#ffffff"
           metalness={0.66}
           roughness={0.14}
         />
@@ -49,7 +49,7 @@ function Rig() {
       <mesh position={[-0.98, 0.78, 0]} rotation={[0, 0, -0.48]}>
         <capsuleGeometry args={[0.18, 1.22, 10, 18]} />
         <meshStandardMaterial
-          color="#bed4ea"
+          color="#d9c7ff"
           metalness={0.68}
           roughness={0.2}
         />
@@ -57,16 +57,16 @@ function Rig() {
       <mesh position={[0.98, 0.78, 0]} rotation={[0, 0, 0.48]}>
         <capsuleGeometry args={[0.18, 1.22, 10, 18]} />
         <meshStandardMaterial
-          color="#4da2ff"
-          emissive="#0b2f5e"
+          color="#8e51e8"
+          emissive="#2b1055"
           emissiveIntensity={0.18}
         />
       </mesh>
       <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.24, 0]}>
         <torusGeometry args={[1.56, 0.06, 18, 80]} />
         <meshStandardMaterial
-          color="#3d9bff"
-          emissive="#0c3163"
+          color="#9a61ed"
+          emissive="#2a0e56"
           emissiveIntensity={0.32}
         />
       </mesh>
@@ -75,7 +75,7 @@ function Rig() {
           <mesh>
             <cylinderGeometry args={[0.34, 0.34, 0.12, 28]} />
             <meshStandardMaterial
-              color="#3d9bff"
+              color="#7a3ee1"
               metalness={0.82}
               roughness={0.12}
             />
@@ -83,7 +83,7 @@ function Rig() {
           <mesh position={[0, 0, position[0] > 0 ? 0.18 : -0.18]}>
             <cylinderGeometry args={[0.28, 0.28, 0.1, 28]} />
             <meshStandardMaterial
-              color="#dceaf8"
+              color="#f8f3ff"
               metalness={0.7}
               roughness={0.12}
             />
@@ -102,15 +102,15 @@ export function HeroScene() {
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ width: "100%", height: "100%" }}
     >
-      <color attach="background" args={["#050c15"]} />
-      <fog attach="fog" args={["#050c15", 6.2, 10.5]} />
+      <color attach="background" args={["#0a0611"]} />
+      <fog attach="fog" args={["#0a0611", 6.2, 10.5]} />
       <ambientLight intensity={1.35} color="#f6f8fa" />
       <directionalLight
         position={[3.8, 4.4, 3.2]}
         intensity={2.15}
         color="#ffffff"
       />
-      <pointLight position={[-2.6, -1.8, 2]} intensity={1.1} color="#3d9bff" />
+      <pointLight position={[-2.6, -1.8, 2]} intensity={1.1} color="#7a3ee1" />
       <spotLight
         position={[0, 5.5, 3.5]}
         angle={0.36}
