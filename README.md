@@ -103,17 +103,24 @@ de treino e o catálogo de exercícios no D1. Cada linha é indexada pelo `uid` 
 vem do ID token, verificado a cada requisição — não há endpoint capaz de
 devolver dados de outra conta.
 
-Para ligar o banco pela primeira vez:
+O banco (`intelligym`, id `8eeb7b32-943d-414f-ae06-a9ede105853b`) já existe e
+está ligado em `apps/worker/wrangler.jsonc`, com as migrações aplicadas. O
+`database_id` não é segredo: quem controla o acesso é o token da API.
+
+As migrações novas sobem sozinhas no `deploy.yml`. Para aplicar à mão:
 
 ```bash
-# 1. cria o banco e devolve o database_id
+npm --workspace apps/worker run db:remote     # migrações
+npm --workspace apps/worker run exercises:seed # catálogo
+```
+
+Recriando do zero em outra conta:
+
+```bash
 npx wrangler d1 create intelligym
-
-# 2. cole o database_id em apps/worker/wrangler.jsonc e preencha
-#    FIREBASE_PROJECT_ID com o id do seu projeto Firebase
-
-# 3. aplique o esquema e publique
+# cole o database_id em apps/worker/wrangler.jsonc e ajuste FIREBASE_PROJECT_ID
 npm --workspace apps/worker run db:remote
+npm --workspace apps/worker run exercises:seed
 npm --workspace apps/worker run deploy
 ```
 
@@ -121,15 +128,23 @@ npm --workspace apps/worker run deploy
 
 Em Settings → Secrets and variables → Actions:
 
-| Segredo                 | Para quê                                                              |
-| ----------------------- | --------------------------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | Publicar Worker e Pages, aplicar migrações                            |
-| `CLOUDFLARE_ACCOUNT_ID` | Identificar a conta Cloudflare                                        |
-| `VITE_FIREBASE_*` (6)   | Entram no build do frontend; sem eles o app sobe em modo demonstração |
+| Segredo                 | Para quê                              |
+| ----------------------- | ------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Publicar o Worker e aplicar migrações |
+| `CLOUDFLARE_ACCOUNT_ID` | Identificar a conta Cloudflare        |
 
-Opcionalmente, a _variable_ `VITE_API_URL` sobrescreve o endereço da API.
 Sem `CLOUDFLARE_API_TOKEN` o workflow avisa e termina sem erro, em vez de
 falhar o commit.
+
+As variáveis `VITE_*` do frontend ficam no painel do Cloudflare Pages
+(Settings → Environment variables), não aqui — é o Pages que roda aquele
+build.
+
+### Domínios autorizados no Firebase
+
+O login com Google só funciona em domínio liberado no console do Firebase:
+Authentication → Settings → Authorized domains. `intelligym.pages.dev`
+precisa estar na lista, senão o app responde `auth/unauthorized-domain`.
 
 Enquanto a API não estiver configurada, o app continua utilizável: tudo é
 gravado em `localStorage` e o selo de sincronização mostra "Somente neste
@@ -143,6 +158,8 @@ O produto web atual já inclui:
 - PWA instalável no Android, iPhone e desktop, com atalhos e uso offline;
 - barra de navegação inferior no celular e áreas seguras respeitadas;
 - geração de treino, execução guiada com cronômetro de descanso e registro de dor;
+- biblioteca com 865 exercícios (catálogo da wger no D1), busca sem acento,
+  filtro por músculo e equipamento, e crédito da licença no detalhe;
 - **coach de movimento**: correção de técnica em tempo real pela câmera, com
   contagem de repetições e esqueleto sobreposto. Roda inteiro no aparelho
   (MediaPipe Pose) — nenhuma imagem é enviada ou gravada;
