@@ -40,8 +40,6 @@ O serviço `intelligym-api-fastapi` é definido em `render.yaml`. Configure no
 painel os valores marcados com `sync: false`:
 
 ```env
-FIREBASE_CLIENT_EMAIL=
-FIREBASE_PRIVATE_KEY=
 AI_API_KEY=
 ```
 
@@ -71,11 +69,10 @@ ENVIRONMENT=production
 FRONTEND_URL=https://intelligym.pages.dev
 BACKEND_CORS_ORIGINS=https://intelligym.pages.dev
 FIREBASE_PROJECT_ID=
-FIREBASE_CLIENT_EMAIL=
-FIREBASE_PRIVATE_KEY=
 AI_PROVIDER=gemini
 AI_API_KEY=
 AI_MODEL=gemini-2.0-flash
 ```
 
-`FIREBASE_PRIVATE_KEY` deve manter as quebras como `\n` quando cadastrada em variável de ambiente.
+O backend valida os ID tokens pelas chaves públicas do Google e não precisa de
+uma chave privada de conta de serviço.

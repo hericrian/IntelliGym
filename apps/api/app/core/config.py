@@ -14,9 +14,6 @@ class Settings(BaseSettings):
     backend_cors_origins: str = "http://localhost:5173"
 
     firebase_project_id: str | None = Field(default=None, alias="FIREBASE_PROJECT_ID")
-    firebase_client_email: str | None = Field(default=None, alias="FIREBASE_CLIENT_EMAIL")
-    firebase_private_key: str | None = Field(default=None, alias="FIREBASE_PRIVATE_KEY")
-
     ai_provider: str | None = Field(default=None, alias="AI_PROVIDER")
     ai_api_key: str | None = Field(default=None, alias="AI_API_KEY")
     ai_model: str | None = Field(default=None, alias="AI_MODEL")

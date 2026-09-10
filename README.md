@@ -98,7 +98,7 @@ Variáveis `VITE_*` são incorporadas ao bundle público e não podem conter seg
 
 ## Autenticação e dados
 
-O Firebase autentica por e-mail/senha ou Google. O token Firebase é enviado à Edge Function `intelligym-data`, que valida assinatura, emissor e audiência antes de acessar as tabelas `intelligym_*` no Supabase.
+O Firebase autentica por e-mail/senha ou Google. O token Firebase é enviado ao FastAPI, que valida assinatura, emissor e audiência com as chaves públicas do Google, sem armazenar uma chave privada de conta de serviço. A Edge Function `intelligym-data` protege o acesso às tabelas `intelligym_*` no Supabase.
 
 As tabelas têm RLS ativado e bloqueiam acesso direto de clientes. A Edge Function é a fronteira para dados privados.
 
