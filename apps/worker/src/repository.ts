@@ -400,3 +400,165 @@ export async function summarizeSessions(db: D1Database, uid: string) {
     minutes: Number(row?.minutes ?? 0)
   };
 }
+
+/* ---------------------------------------------------- catálogo de exercícios */
+
+export type CatalogExercise = {
+  id: string;
+  language: string;
+  name: string;
+  description: string;
+  category: string | null;
+  muscles: string[];
+  musclesSecondary: string[];
+  equipment: string[];
+  imageUrl: string | null;
+  license: string | null;
+  licenseAuthor: string | null;
+  sourceUrl: string | null;
+};
+
+export type CatalogQuery = {
+  search?: string;
+  muscle?: string;
+  equipment?: string;
+  category?: string;
+  language?: string;
+  withImage?: boolean;
+  limit?: number;
+  offset?: number;
+};
+
+function toCatalogExercise(row: Record<string, unknown>): CatalogExercise {
+  const list = (value: unknown): string[] => {
+    try {
+      const parsed = JSON.parse(String(value ?? "[]"));
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+
+  return {
+    id: String(row.id),
+    language: String(row.language),
+    name: String(row.name),
+    description: String(row.description ?? ""),
+    category: (row.category as string) ?? null,
+    muscles: list(row.muscles),
+    musclesSecondary: list(row.muscles_secondary),
+    equipment: list(row.equipment),
+    imageUrl: (row.image_url as string) ?? null,
+    license: (row.license as string) ?? null,
+    licenseAuthor: (row.license_author as string) ?? null,
+    sourceUrl: (row.source_url as string) ?? null
+  };
+}
+
+/** Remove acento e caixa, para casar com o search_blob gravado na importação. */
+function normalizeTerm(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+export async function searchExercises(db: D1Database, query: CatalogQuery) {
+  const where: string[] = [];
+  const binds: unknown[] = [];
+
+  if (query.search) {
+    where.push("search_blob LIKE ?");
+    binds.push(`%${normalizeTerm(query.search)}%`);
+  }
+  if (query.muscle) {
+    // muscles é JSON; procurar o termo entre aspas evita casar prefixo de
+    // outro músculo ("peito" dentro de "peitoral maior", por exemplo).
+    where.push("(muscles LIKE ? OR muscles_secondary LIKE ?)");
+    binds.push(`%"${query.muscle}"%`, `%"${query.muscle}"%`);
+  }
+  if (query.equipment) {
+    where.push("equipment LIKE ?");
+    binds.push(`%"${query.equipment}"%`);
+  }
+  if (query.category) {
+    where.push("category = ?");
+    binds.push(query.category);
+  }
+  if (query.language) {
+    where.push("language = ?");
+    binds.push(query.language);
+  }
+  if (query.withImage) {
+    where.push("image_url IS NOT NULL");
+  }
+
+  const clause = where.length > 0 ? `WHERE ${where.join(" AND ")}` : "";
+  const limit = Math.min(Math.max(query.limit ?? 40, 1), 100);
+  const offset = Math.max(query.offset ?? 0, 0);
+
+  const [rows, count] = await Promise.all([
+    db
+      .prepare(
+        // Português e com imagem primeiro: é o que a pessoa quer ver no topo.
+        `SELECT * FROM exercises ${clause}
+         ORDER BY (language = 'pt') DESC, (image_url IS NOT NULL) DESC, name
+         LIMIT ? OFFSET ?`
+      )
+      .bind(...binds, limit, offset)
+      .all(),
+    db
+      .prepare(`SELECT COUNT(*) AS total FROM exercises ${clause}`)
+      .bind(...binds)
+      .first<{ total: number }>()
+  ]);
+
+  return {
+    exercises: rows.results.map(toCatalogExercise),
+    total: Number(count?.total ?? 0),
+    limit,
+    offset
+  };
+}
+
+export async function getExercise(db: D1Database, id: string) {
+  const row = await db
+    .prepare("SELECT * FROM exercises WHERE id = ?")
+    .bind(id)
+    .first();
+  return row ? toCatalogExercise(row) : null;
+}
+
+/** Valores distintos para montar os filtros da biblioteca. */
+export async function exerciseFacets(db: D1Database) {
+  const { results } = await db
+    .prepare("SELECT muscles, equipment, category FROM exercises")
+    .all<{ muscles: string; equipment: string; category: string | null }>();
+
+  const muscles = new Set<string>();
+  const equipment = new Set<string>();
+  const categories = new Set<string>();
+
+  for (const row of results) {
+    try {
+      (JSON.parse(row.muscles) as string[]).forEach((item) =>
+        muscles.add(item)
+      );
+      (JSON.parse(row.equipment) as string[]).forEach((item) =>
+        equipment.add(item)
+      );
+    } catch {
+      // Linha com JSON corrompido não deve derrubar os filtros inteiros.
+    }
+    if (row.category) categories.add(row.category);
+  }
+
+  const sorted = (set: Set<string>) =>
+    [...set].sort((a, b) => a.localeCompare(b, "pt"));
+  return {
+    muscles: sorted(muscles),
+    equipment: sorted(equipment),
+    categories: sorted(categories)
+  };
+}

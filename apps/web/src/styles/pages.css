@@ -854,3 +854,60 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* ---- biblioteca de exercicios ------------------------------------------- */
+.exercise-card {
+  align-content: start;
+}
+
+.exercise-card__image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  /* Muitas ilustracoes da wger vem com fundo branco; o claro evita o recorte
+     escuro em volta da figura. */
+  background: #f4f2f7;
+}
+
+.exercise-card__skeleton {
+  min-height: 320px;
+}
+
+/* Sem isto os cartoes ficam com alturas muito diferentes so por causa do
+   tamanho do texto. */
+.exercise-card__excerpt {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.exercise-detail__image {
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  background: #f4f2f7;
+}
+
+.exercise-detail__credit {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.exercise-detail__credit a {
+  color: var(--brand-strong);
+  text-decoration: underline;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}

@@ -333,3 +333,191 @@ describe("banco ausente", () => {
     });
   });
 });
+
+describe("catálogo de exercícios", () => {
+  const catalogo = [
+    {
+      id: "ex-1",
+      language: "pt",
+      name: "Agachamento livre",
+      description:
+        "Desça controlando o movimento, sem deixar o joelho passar do pé.",
+      category: "pernas",
+      muscles: '["quadríceps","glúteos"]',
+      secondary: '["core"]',
+      equipment: '["Barra"]',
+      image: "https://wger.de/media/agachamento.png",
+      blob: "agachamento livre quadriceps gluteos core barra"
+    },
+    {
+      id: "ex-2",
+      language: "en",
+      name: "Bench Press",
+      description:
+        "Lower the bar to the chest and press it back up under control.",
+      category: "peito",
+      muscles: '["peito"]',
+      secondary: '["tríceps"]',
+      equipment: '["Barra","Banco"]',
+      image: null,
+      blob: "bench press peito triceps barra banco"
+    },
+    {
+      id: "ex-3",
+      language: "pt",
+      name: "Ponte de glúteo",
+      description:
+        "Suba o quadril até alinhar joelho, quadril e ombro, sem arquear a lombar.",
+      category: "pernas",
+      muscles: '["glúteos"]',
+      secondary: "[]",
+      equipment: '["Colchonete"]',
+      image: "https://wger.de/media/ponte.png",
+      blob: "ponte de gluteo gluteos colchonete"
+    }
+  ];
+
+  beforeEach(async () => {
+    for (const e of catalogo) {
+      await env.DB.prepare(
+        `INSERT INTO exercises (id, language, name, description, category, muscles,
+           muscles_secondary, equipment, image_url, license, license_author,
+           source_url, search_blob, updated_at)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+      )
+        .bind(
+          e.id,
+          e.language,
+          e.name,
+          e.description,
+          e.category,
+          e.muscles,
+          e.secondary,
+          e.equipment,
+          e.image,
+          "CC-BY-SA 4",
+          "wger.de",
+          `https://wger.de/en/exercise/${e.id}/view/`,
+          e.blob,
+          "2026-09-10T00:00:00.000Z"
+        )
+        .run();
+    }
+  });
+
+  it("é público: lista sem exigir login", async () => {
+    const response = await call("/api/exercises");
+    const body = (await response.json()) as {
+      total: number;
+      exercises: unknown[];
+    };
+
+    expect(response.status).toBe(200);
+    expect(body.total).toBe(3);
+    expect(body.exercises).toHaveLength(3);
+  });
+
+  it("ordena português com imagem primeiro", async () => {
+    const body = (await (await call("/api/exercises")).json()) as {
+      exercises: Array<{ name: string; language: string }>;
+    };
+
+    expect(body.exercises[0].language).toBe("pt");
+    expect(body.exercises.at(-1)?.name).toBe("Bench Press");
+  });
+
+  it("busca ignorando acento e caixa", async () => {
+    const body = (await (
+      await call("/api/exercises?search=GLUTEO")
+    ).json()) as {
+      exercises: Array<{ name: string }>;
+    };
+
+    expect(body.exercises.map((e) => e.name)).toContain("Ponte de glúteo");
+  });
+
+  it("filtra por músculo sem casar prefixo de outro", async () => {
+    const body = (await (
+      await call("/api/exercises?muscle=gl%C3%BAteos")
+    ).json()) as {
+      total: number;
+      exercises: Array<{ name: string }>;
+    };
+
+    expect(body.total).toBe(2);
+    expect(body.exercises.map((e) => e.name).sort()).toEqual([
+      "Agachamento livre",
+      "Ponte de glúteo"
+    ]);
+  });
+
+  it("filtra por equipamento", async () => {
+    const body = (await (
+      await call("/api/exercises?equipment=Colchonete")
+    ).json()) as {
+      total: number;
+    };
+    expect(body.total).toBe(1);
+  });
+
+  it("filtra só os que têm imagem", async () => {
+    const body = (await (
+      await call("/api/exercises?withImage=true")
+    ).json()) as {
+      total: number;
+    };
+    expect(body.total).toBe(2);
+  });
+
+  it("pagina mantendo o total real", async () => {
+    const body = (await (
+      await call("/api/exercises?limit=1&offset=1")
+    ).json()) as {
+      total: number;
+      exercises: unknown[];
+    };
+
+    expect(body.total).toBe(3);
+    expect(body.exercises).toHaveLength(1);
+  });
+
+  it("devolve um exercício com o crédito da licença", async () => {
+    const body = (await (await call("/api/exercises/ex-1")).json()) as {
+      exercise: {
+        name: string;
+        license: string;
+        licenseAuthor: string;
+        sourceUrl: string;
+      };
+    };
+
+    expect(body.exercise.name).toBe("Agachamento livre");
+    expect(body.exercise.license).toBe("CC-BY-SA 4");
+    expect(body.exercise.licenseAuthor).toBe("wger.de");
+    expect(body.exercise.sourceUrl).toContain("wger.de");
+  });
+
+  it("responde 404 para exercício inexistente", async () => {
+    expect((await call("/api/exercises/nao-existe")).status).toBe(404);
+  });
+
+  it("monta os filtros a partir do que existe no catálogo", async () => {
+    const body = (await (await call("/api/exercises/facets")).json()) as {
+      muscles: string[];
+      equipment: string[];
+      categories: string[];
+    };
+
+    expect(body.muscles).toContain("glúteos");
+    expect(body.equipment).toEqual(["Banco", "Barra", "Colchonete"]);
+    expect(body.categories).toEqual(["peito", "pernas"]);
+  });
+
+  it("marca o catálogo como cacheável, ao contrário dos dados do usuário", async () => {
+    const catalogo = await call("/api/exercises");
+    const usuario = await call("/api/me", { auth: true });
+
+    expect(catalogo.headers.get("Cache-Control")).toContain("max-age=3600");
+    expect(usuario.headers.get("Cache-Control")).toBe("no-store");
+  });
+});

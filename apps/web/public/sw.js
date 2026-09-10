@@ -3,9 +3,14 @@
    - navegação (HTML): rede primeiro, cai para o shell em cache quando offline
    - assets com hash no nome (/assets/*): cache primeiro, nunca mudam
    - modelo de visão + ícones: cache primeiro, buscados só na primeira vez
+
+   Regra que vale para todas: um handler de fetch precisa SEMPRE resolver com
+   um Response. Se ele resolver com undefined ou rejeitar, o navegador troca a
+   página por um erro de rede — o usuário perde o que estava fazendo e não
+   recebe nenhuma explicação.
 */
 
-const VERSION = "v3";
+const VERSION = "v4";
 const SHELL_CACHE = `intelligym-shell-${VERSION}`;
 const ASSET_CACHE = `intelligym-assets-${VERSION}`;
 const MODEL_CACHE = `intelligym-models-${VERSION}`;
@@ -19,6 +24,37 @@ const SHELL = [
   "/apple-touch-icon.png",
   "/logo.png"
 ];
+
+const OFFLINE_PAGE = `<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IntelliGym — sem conexão</title>
+<style>
+  body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;
+    background:#000;color:#a8a3b3;text-align:center;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  h1{margin:0 0 8px;font-size:18px;color:#f8f8f8}
+  p{margin:0 0 20px;max-width:40ch;font-size:15px;line-height:1.6}
+  button{min-height:44px;padding:0 20px;border:0;border-radius:14px;
+    background:#9649f3;color:#fff;font:inherit;font-weight:600;cursor:pointer}
+</style></head>
+<body><div>
+  <h1>Sem conexão</h1>
+  <p>Não conseguimos carregar esta tela agora. Seus treinos e registros
+     salvos continuam neste aparelho.</p>
+  <button onclick="location.reload()">Tentar de novo</button>
+</div></body></html>`;
+
+function offlineResponse() {
+  return new Response(OFFLINE_PAGE, {
+    status: 503,
+    headers: { "Content-Type": "text/html; charset=utf-8" }
+  });
+}
+
+function unavailableResponse() {
+  return new Response("", { status: 503, statusText: "Offline" });
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -61,9 +97,35 @@ async function cacheFirst(request, cacheName) {
   const hit = await cache.match(request);
   if (hit) return hit;
 
-  const response = await fetch(request);
-  if (response.ok) cache.put(request, response.clone());
-  return response;
+  try {
+    const response = await fetch(request);
+    if (response.ok) cache.put(request, response.clone());
+    return response;
+  } catch {
+    // Sem rede e sem cache: 503 explícito, para o chamador tratar. Deixar a
+    // promise rejeitar viraria erro de rede na aba inteira.
+    return unavailableResponse();
+  }
+}
+
+/** Cache primeiro, revalidando em segundo plano. */
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(SHELL_CACHE);
+  const hit = await cache.match(request);
+
+  const network = fetch(request)
+    .then((response) => {
+      if (response.ok) cache.put(request, response.clone());
+      return response;
+    })
+    .catch(() => null);
+
+  if (hit) {
+    // Não esperamos a revalidação: ela atualiza o cache para a próxima visita.
+    return hit;
+  }
+
+  return (await network) ?? unavailableResponse();
 }
 
 async function networkFirstDocument(request) {
@@ -77,7 +139,7 @@ async function networkFirstDocument(request) {
   } catch {
     const cache = await caches.open(SHELL_CACHE);
     // SPA: qualquer rota é servida pelo mesmo index.html.
-    return (await cache.match("/")) ?? Response.error();
+    return (await cache.match("/")) ?? offlineResponse();
   }
 }
 
@@ -114,17 +176,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Resto (ícones, logo, manifest): cache primeiro com revalidação em segundo plano.
-  event.respondWith(
-    caches.open(SHELL_CACHE).then(async (cache) => {
-      const hit = await cache.match(request);
-      const network = fetch(request)
-        .then((response) => {
-          if (response.ok) cache.put(request, response.clone());
-          return response;
-        })
-        .catch(() => hit);
-      return hit ?? network;
-    })
-  );
+  // Resto: ícones, logo, manifest.
+  event.respondWith(staleWhileRevalidate(request));
 });

@@ -1,5 +1,5 @@
 import { DatabaseSync } from "node:sqlite";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 /**
@@ -53,11 +53,14 @@ export type FakeD1 = {
 export function createTestDatabase(): FakeD1 {
   const db = new DatabaseSync(":memory:");
 
-  const schema = readFileSync(
-    fileURLToPath(new URL("../migrations/0001_init.sql", import.meta.url)),
-    "utf8"
-  );
-  db.exec(schema);
+  // Todas as migrações, em ordem — o teste roda contra o mesmo esquema que
+  // vai para produção, inclusive as que forem adicionadas depois.
+  const dir = fileURLToPath(new URL("../migrations/", import.meta.url));
+  for (const file of readdirSync(dir)
+    .filter((f) => f.endsWith(".sql"))
+    .sort()) {
+    db.exec(readFileSync(dir + file, "utf8"));
+  }
 
   return {
     prepare: (sql: string) => new Statement(db, sql),

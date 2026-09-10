@@ -30,6 +30,8 @@ export function corsHeaders(origin: string | null, allowList = ""): Headers {
 
 export type Responder = {
   json(value: unknown, init?: ResponseInit): Response;
+  /** Resposta pública e cacheável na borda (catálogo, não dado de usuário). */
+  cached(value: unknown, seconds: number): Response;
   fail(status: number, message: string): Response;
   preflight(): Response;
 };
@@ -50,6 +52,14 @@ export function createResponder(
         ...init,
         headers: headers()
       });
+    },
+    cached(value, seconds) {
+      const withCache = headers();
+      withCache.set(
+        "Cache-Control",
+        `public, max-age=${seconds}, s-maxage=${seconds}`
+      );
+      return new Response(JSON.stringify(value), { headers: withCache });
     },
     fail(status, message) {
       return this.json({ error: message }, { status });

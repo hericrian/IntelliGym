@@ -13,7 +13,7 @@
     {
       "binding": "DB",
       "database_name": "intelligym",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_id": "8eeb7b32-943d-414f-ae06-a9ede105853b",
       "migrations_dir": "migrations"
     }
   ],

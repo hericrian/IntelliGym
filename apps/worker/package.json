@@ -13,7 +13,10 @@
     "test": "vitest run",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"wrangler.jsonc\"",
     "db:local": "wrangler d1 migrations apply intelligym --local",
-    "db:remote": "wrangler d1 migrations apply intelligym --remote"
+    "db:remote": "wrangler d1 migrations apply intelligym --remote",
+    "exercises:import": "node scripts/import-exercises.mjs",
+    "exercises:seed": "wrangler d1 execute intelligym --remote --file=./seeds/exercises.sql",
+    "exercises:seed:local": "wrangler d1 execute intelligym --local --file=./seeds/exercises.sql"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250909.0",

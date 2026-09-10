@@ -4,12 +4,19 @@ const globals = require("globals");
 
 module.exports = tseslint.config(
   {
-    ignores: ["**/node_modules/**", "**/.expo/**", "**/dist/**"]
+    ignores: [
+      "**/node_modules/**",
+      "**/.expo/**",
+      "**/dist/**",
+      // Gerado pelo wrangler.
+      "apps/worker/worker-configuration.d.ts"
+    ]
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["**/*.js", "**/*.cjs"],
+    // Scripts e config que rodam no Node, nao no navegador.
+    files: ["**/*.js", "**/*.cjs", "**/*.mjs", "**/scripts/**"],
     languageOptions: {
       globals: {
         ...globals.node

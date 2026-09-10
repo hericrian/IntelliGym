@@ -34,6 +34,8 @@ apps/
       auth.ts        # verificação do ID token do Firebase (RS256/WebCrypto)
       repository.ts  # acesso ao D1
     migrations/      # esquema SQL versionado
+    scripts/         # importador do catálogo de exercícios (wger)
+    seeds/           # catálogo gerado, aplicado no D1
     test/            # testes de rota rodando SQL real via node:sqlite
   api/            # FastAPI — protótipo anterior, hoje sem uso em produção
   mobile/         # Expo / React Native
@@ -43,7 +45,7 @@ firebase/         # regras de Firestore e Storage
 docs/             # documentação operacional
 .github/workflows/
   ci.yml     # lint, typecheck, testes e formatação em todo push
-  deploy.yml # publica frontend, API e migrações quando a CI passa na main
+  deploy.yml # aplica migrações do D1 e publica a API quando a CI passa
 ```
 
 ### Frontend e backend
@@ -51,21 +53,53 @@ docs/             # documentação operacional
 São projetos independentes no mesmo monorepo: cada um tem comandos,
 configuração e artefato de produção próprios.
 
-| Camada   | Pasta             | Onde roda          | Sobe a cada commit na main?         |
-| -------- | ----------------- | ------------------ | ----------------------------------- |
-| Frontend | `apps/web`        | Cloudflare Pages   | Sim, pelo `deploy.yml`              |
-| API      | `apps/worker`     | Cloudflare Workers | Sim, pelo `deploy.yml`              |
-| Banco    | D1 (`intelligym`) | Cloudflare         | Migrações aplicadas no mesmo job    |
-| FastAPI  | `apps/api`        | Render             | Sim, pelo `render.yaml` (protótipo) |
+| Camada   | Pasta             | Onde roda          | Sobe a cada commit na main?                  |
+| -------- | ----------------- | ------------------ | -------------------------------------------- |
+| Frontend | `apps/web`        | Cloudflare Pages   | Sim, pela integração Git do próprio Pages    |
+| API      | `apps/worker`     | Cloudflare Workers | Sim, pelo `deploy.yml`                       |
+| Banco    | D1 (`intelligym`) | Cloudflare         | Migrações aplicadas antes de publicar a API  |
+| FastAPI  | `apps/api`        | Render             | Sim, pelo `render.yaml` (protótipo, sem uso) |
 
-O `deploy.yml` roda **depois** da CI e só quando ela passa: um commit que
-quebrou typecheck ou teste não chega em produção. Commits simultâneos são
-agrupados, e só o último vai ao ar.
+O frontend fica de fora do `deploy.yml` de propósito: o Pages já está ligado
+ao repositório e publica sozinho. Duplicar criaria dois caminhos de deploy
+disputando o mesmo site.
+
+O `deploy.yml` roda **depois** da CI e só quando ela passa — um commit que
+quebrou typecheck ou teste não chega na API. Commits simultâneos são
+agrupados e só o último vai ao ar. No fim ele confere `/health` e falha se a
+API tiver subido sem o binding do D1.
+
+## Catálogo de exercícios
+
+Os exercícios vêm da [wger](https://wger.de) (licença CC-BY-SA 4) e ficam no
+nosso D1, não são consultados ao vivo: o app não pode depender do uptime de
+terceiros no meio de um treino, precisa funcionar offline e queremos
+curadoria sobre o que entra.
+
+São 865 verbetes com descrição, músculos e equipamento — 64 em português e
+268 com ilustração. O resto fica em inglês, marcado como tal na interface.
+Português e com imagem aparecem primeiro na listagem.
+
+```bash
+# baixa da wger e regenera seeds/exercises.sql (revisável no diff)
+npm --workspace apps/worker run exercises:import
+
+# aplica no banco
+npm --workspace apps/worker run exercises:seed
+```
+
+O vocabulário da wger é traduzido para o do app durante a importação
+(`Glutes` → `glúteos`, `Dumbbell` → `Halteres`). Quando o exercício vem sem
+músculo preenchido, a categoria serve de grupo — é melhor que descartar um
+verbete traduzido por causa de um campo vazio.
+
+A CC-BY-SA exige crédito: o autor e o link para a origem aparecem no detalhe
+de cada exercício.
 
 ## Banco de dados
 
-A API guarda perfil, equipamentos, planos gerados, registros de dor e sessões
-de treino no D1. Cada linha é indexada pelo `uid` do Firebase e a identidade
+A API guarda perfil, equipamentos, planos gerados, registros de dor, sessões
+de treino e o catálogo de exercícios no D1. Cada linha é indexada pelo `uid` do Firebase e a identidade
 vem do ID token, verificado a cada requisição — não há endpoint capaz de
 devolver dados de outra conta.
 

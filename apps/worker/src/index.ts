@@ -2,6 +2,8 @@ import { requireUser } from "./auth";
 import { createResponder, HttpError, readJson, type Responder } from "./http";
 import {
   deletePlan,
+  exerciseFacets,
+  getExercise,
   getProfile,
   listEquipment,
   listPainRecords,
@@ -10,6 +12,7 @@ import {
   savePainRecord,
   savePlan,
   saveSession,
+  searchExercises,
   summarizeSessions,
   upsertProfile,
   type Profile
@@ -89,6 +92,38 @@ async function route(
   if (method === "POST" && path === "/api/workouts/generate") {
     const body = await readJson<WorkoutRequest>(request);
     return res.json({ workout: createWorkout(body) }, { status: 201 });
+  }
+
+  // O catálogo é público e igual para todo mundo: sem login e cacheável na
+  // borda. Só os dados do usuário exigem token.
+  if (method === "GET" && path === "/api/exercises") {
+    const db = requireDatabase(env);
+    const params = new URL(request.url).searchParams;
+
+    const result = await searchExercises(db, {
+      search: params.get("search") ?? undefined,
+      muscle: params.get("muscle") ?? undefined,
+      equipment: params.get("equipment") ?? undefined,
+      category: params.get("category") ?? undefined,
+      language: params.get("language") ?? undefined,
+      withImage: params.get("withImage") === "true",
+      limit: Number(params.get("limit")) || undefined,
+      offset: Number(params.get("offset")) || undefined
+    });
+
+    return res.cached(result, 3600);
+  }
+
+  if (method === "GET" && path === "/api/exercises/facets") {
+    return res.cached(await exerciseFacets(requireDatabase(env)), 86400);
+  }
+
+  const exerciseMatch = /^\/api\/exercises\/([\w-]{1,64})$/.exec(path);
+  if (exerciseMatch && method === "GET") {
+    const exercise = await getExercise(requireDatabase(env), exerciseMatch[1]);
+    return exercise
+      ? res.cached({ exercise }, 3600)
+      : res.fail(404, "Exercício não encontrado.");
   }
 
   /* ------------------------------------------------------ autenticado */
