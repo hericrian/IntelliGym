@@ -1,111 +1,122 @@
 # IntelliGym
 
-IntelliGym e um produto mobile de treino inteligente com foco em personalizacao, seguranca, recuperacao funcional e evolucao de longo prazo. A base atual foi estruturada para crescer como produto real, com app mobile em Expo/React Native, API em FastAPI e separacao clara entre dominio, dados, features e interface.
+Plataforma de treino inteligente com frontend web, API FastAPI, autenticação Firebase e persistência PostgreSQL no Supabase.
 
-## Decisao arquitetural
+## Arquitetura de produção
 
-A plataforma mobile continua em Expo + React Native + TypeScript.
+| Camada           | Tecnologia                          | Diretório            | Destino                         |
+| ---------------- | ----------------------------------- | -------------------- | ------------------------------- |
+| Frontend         | React 19 + Vite                     | `apps/web`           | Cloudflare Pages                |
+| Backend HTTP     | FastAPI + Uvicorn                   | `apps/api`           | Render `intelligym-api-fastapi` |
+| Autenticação     | Firebase Authentication             | configuração externa | Projeto `intelligym-46878`      |
+| Banco            | Supabase PostgreSQL + Edge Function | configuração externa | Projeto `gonmdanxptodfdkewcaf`  |
+| Mobile           | Expo + React Native                 | `apps/mobile`        | em desenvolvimento              |
+| Backend de borda | Cloudflare Workers                  | `apps/worker`        | opcional                        |
 
-Motivos principais:
+- Frontend: <https://intelligym.pages.dev>
+- Backend: <https://intelligym-api-fastapi.onrender.com>
 
-- menor custo de evolucao sobre a base ja existente;
-- ecossistema maduro para camera, autenticacao, notificacoes e pagamentos;
-- melhor reaproveitamento com contratos TypeScript e futura integracao com IA;
-- menos risco imediato do que reiniciar o projeto em outra stack sem necessidade comprovada.
-
-Detalhes da decisao: [docs/ADR-002-mobile-platform-decision.md](docs/ADR-002-mobile-platform-decision.md)
-
-## Estrutura
+## Organização
 
 ```text
 apps/
-  api/            # FastAPI: rotas, schemas, servicos e integracao Firebase Admin
-  mobile/         # app Expo / React Native
-    src/
-      core/       # shell da aplicacao, fluxo raiz e estado global
-      data/       # dados simulados e, futuramente, fontes remotas/locais
-      domain/     # modelos e regras puras
-      features/   # telas e modulos por caso de uso
-      ui/         # componentes e tema compartilhados
-  web/            # app Vite + React (build publicado na Vercel)
-    src/
-      components/ contexts/ hooks/ layouts/ lib/ pages/ services/ styles/
-  worker/         # Cloudflare Worker que expoe a API de dados
+  web/       frontend público e aplicação autenticada
+  worker/    backend de borda opcional
+  mobile/    aplicativo Expo/React Native
+  api/       backend oficial FastAPI
 packages/
-  shared/         # contratos compartilhados entre clientes e API
-firebase/         # regras de Firestore/Storage e indices
-docs/             # ADRs e guias de deploy, auth e roles
-.github/          # workflow de CI
+  shared/    contratos TypeScript compartilhados
+firebase/    regras de Firestore e Storage
+docs/        documentação operacional
 ```
 
-## MVP atual
+Frontend e backend são projetos independentes no mesmo monorepo. Cada um possui comandos, configuração e artefato de produção próprios.
 
-O MVP atual ja inclui:
-
-- onboarding com perfil demonstracao orientado a fortalecimento de joelho;
-- navegacao inferior com cinco abas: Inicio, Treino, Progresso, IA e Perfil;
-- dados simulados realistas para treino, progresso, biblioteca e jornada de recuperacao;
-- alertas de seguranca e restricoes funcionais visiveis na UX;
-- API FastAPI com `GET /health`;
-- estrutura pronta para evoluir para autenticacao, banco, IA, camera e assinatura.
-
-## Requisitos
+## Requisitos e instalação
 
 - Node.js 24+
 - npm 11+
-- Python 3.11+
-
-## Configuracao
-
-1. Copie `.env.example` para `.env` quando precisar de configuracao local.
-2. Instale as dependencias JavaScript:
+- Wrangler 4+
+- Python 3.11+ apenas para `apps/api`
 
 ```bash
 npm install
 ```
 
-3. Instale as dependencias Python:
+Para incluir a API FastAPI nos comandos gerais, crie e ative o ambiente Python:
 
-```bash
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
 python -m pip install -r apps/api/requirements.txt
 ```
 
-## Desenvolvimento
+Em Linux/macOS, ative com `source .venv/bin/activate`.
 
-API:
+Copie `apps/web/.env.example` para `apps/web/.env.local`. Nunca coloque chaves administrativas Firebase ou `SUPABASE_SERVICE_ROLE_KEY` em variáveis `VITE_*`.
+
+## Desenvolvimento separado
 
 ```bash
-npm run dev:api
+npm run dev:frontend
+npm run dev:backend
+npm run dev:edge
 ```
 
-Mobile Expo:
+O frontend abre em `http://localhost:5173`. O Worker local usa a porta informada pelo Wrangler.
+
+## Build e validação
 
 ```bash
-npm run dev:mobile
-```
-
-Web local para validacao rapida:
-
-```bash
-cd apps/mobile
-npx expo start --web --offline --port 8083
-```
-
-## Validacoes
-
-```bash
+npm run build:frontend
+npm run build:backend
+npm run build:edge
+npm run build:production
 npm run lint
-npm run typecheck
 npm run test
 npm run format:check
 ```
 
-## Proximos modulos planejados
+O build do backend executa um dry run do Wrangler e não publica alterações.
 
-- autenticacao e perfil persistido;
-- repositorios reais com Supabase;
-- pipeline de treino com validacao deterministica antes de aceitar sugestoes de IA;
-- assistente por voz;
-- analise de movimento por camera;
-- paywall e assinatura premium;
-- observabilidade e analytics de produto.
+## Variáveis do frontend
+
+Configure no Cloudflare Pages, nos ambientes Production e Preview:
+
+```env
+VITE_API_URL=https://intelligym-api-fastapi.onrender.com
+VITE_INTELLIGYM_DATA_API_URL=https://gonmdanxptodfdkewcaf.supabase.co/functions/v1/intelligym-data
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+```
+
+Variáveis `VITE_*` são incorporadas ao bundle público e não podem conter segredos.
+
+## Autenticação e dados
+
+O Firebase autentica por e-mail/senha ou Google. O token Firebase é enviado à Edge Function `intelligym-data`, que valida assinatura, emissor e audiência antes de acessar as tabelas `intelligym_*` no Supabase.
+
+As tabelas têm RLS ativado e bloqueiam acesso direto de clientes. A Edge Function é a fronteira para dados privados.
+
+## Deploy independente
+
+```bash
+npm run deploy:frontend
+npm run deploy:edge
+```
+
+O FastAPI é publicado automaticamente pelo Blueprint `render.yaml` depois que os checks da branch principal passam. Os comandos Cloudflare exigem uma sessão Wrangler autenticada. Segredos devem ser configurados no painel, nunca versionados.
+
+## CI
+
+O workflow `.github/workflows/ci.yml` executa lint, tipos, testes, formatação e builds dos dois projetos. Um push não deve ser publicado se alguma etapa falhar.
+
+## Documentação
+
+- [`docs/deployment-env.md`](docs/deployment-env.md)
+- [`docs/firebase-google-auth.md`](docs/firebase-google-auth.md)
+- [`docs/firebase-roles.md`](docs/firebase-roles.md)

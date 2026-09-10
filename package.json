@@ -5,6 +5,7 @@
   "workspaces": [
     "apps/mobile",
     "apps/web",
+    "apps/worker",
     "packages/shared"
   ],
   "overrides": {
@@ -25,10 +26,19 @@
   },
   "scripts": {
     "dev:mobile": "npm --workspace apps/mobile run start",
-    "dev:web": "npm --workspace apps/web run dev",
-    "build:web": "npm --workspace apps/web run build",
+    "dev:frontend": "npm --workspace apps/web run dev",
+    "dev:backend": "python -m uvicorn app.main:app --app-dir apps/api --reload --host 0.0.0.0 --port 8000",
+    "dev:edge": "npm --workspace apps/worker run dev",
+    "dev:web": "npm run dev:frontend",
+    "build:frontend": "npm --workspace apps/web run build",
+    "build:backend": "python -m compileall -q apps/api/app",
+    "build:edge": "npm --workspace apps/worker run build",
+    "build:production": "npm run build:frontend && npm run build:backend && npm run build:edge",
+    "build:web": "npm run build:frontend",
+    "deploy:frontend": "npm run build:frontend && npm --workspace apps/worker exec wrangler pages deploy ../../apps/web/dist --project-name intelligym --branch main",
+    "deploy:edge": "npm --workspace apps/worker run deploy",
     "dev:api": "python -m uvicorn app.main:app --app-dir apps/api --reload --host 0.0.0.0 --port 8000",
-    "lint": "npm run lint --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present && python -m ruff check apps/api",
     "typecheck": "npm run typecheck --workspaces --if-present && python -m mypy apps/api",
     "test": "npm run test --workspaces --if-present && python -m pytest apps/api/tests",
     "format:check": "npm run format:check --workspaces --if-present && python -m ruff format --check apps/api",

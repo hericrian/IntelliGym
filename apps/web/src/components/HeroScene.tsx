@@ -1,91 +1,115 @@
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
-import type { Group, Mesh } from "three";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useRef } from "react";
+import type { Group } from "three";
 
-function Rig() {
+// Cores da marca. As placas usam o roxo do logo; a barra fica clara para
+// repetir o contraste da arte (roxo e branco sobre preto).
+const PLATE = "#7a35e0";
+const PLATE_RIM = "#9649f3";
+const COLLAR = "#5b21b6";
+const BAR = "#e9e4f3";
+
+// Meia-largura do halter em unidades de mundo, usada para caber na viewport.
+const HALF_WIDTH = 2.2;
+
+/** Uma anilha: disco roxo com um aro mais claro, como no logo. */
+function Plate({
+  x,
+  radius,
+  depth
+}: {
+  x: number;
+  radius: number;
+  depth: number;
+}) {
+  return (
+    <group position={[x, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <mesh>
+        <cylinderGeometry args={[radius, radius, depth, 48]} />
+        <meshStandardMaterial color={PLATE} metalness={0.34} roughness={0.38} />
+      </mesh>
+      {/* Aro: o contorno claro que a arte tem em volta de cada disco. */}
+      <mesh>
+        <torusGeometry args={[radius, depth * 0.16, 12, 64]} />
+        <meshStandardMaterial
+          color={PLATE_RIM}
+          metalness={0.5}
+          roughness={0.26}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+/** Luva que prende as anilhas na barra. */
+function Collar({
+  x,
+  radius,
+  depth
+}: {
+  x: number;
+  radius: number;
+  depth: number;
+}) {
+  return (
+    <mesh position={[x, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <cylinderGeometry args={[radius, radius, depth, 28]} />
+      <meshStandardMaterial color={COLLAR} metalness={0.6} roughness={0.3} />
+    </mesh>
+  );
+}
+
+function Dumbbell() {
   const groupRef = useRef<Group>(null);
-  const torsoRef = useRef<Mesh>(null);
 
   useFrame((state) => {
-    const elapsed = state.clock.getElapsedTime();
-
-    if (groupRef.current) {
-      groupRef.current.rotation.y = Math.sin(elapsed * 0.42) * 0.28;
-      groupRef.current.rotation.x = Math.cos(elapsed * 0.22) * 0.04;
-    }
-
-    if (torsoRef.current) {
-      torsoRef.current.position.y = Math.sin(elapsed * 0.8) * 0.05;
-    }
+    const t = state.clock.getElapsedTime();
+    if (!groupRef.current) return;
+    // Giro lento e continuo: mostra que e 3D sem virar carrossel.
+    groupRef.current.rotation.y = t * 0.32;
+    groupRef.current.rotation.x = Math.sin(t * 0.5) * 0.06;
+    groupRef.current.position.y = Math.sin(t * 0.9) * 0.07;
   });
 
-  const weights = useMemo(
-    () =>
-      [
-        [-1.22, 0, 0],
-        [1.22, 0, 0]
-      ] as const,
-    []
-  );
+  // As anilhas espelham nos dois lados, do maior disco para o menor.
+  const plates = [
+    { offset: 1.16, radius: 0.82, depth: 0.22 },
+    { offset: 1.43, radius: 0.67, depth: 0.2 },
+    { offset: 1.66, radius: 0.51, depth: 0.18 }
+  ];
 
   return (
-    <group ref={groupRef} position={[0, -0.16, 0]}>
-      <mesh ref={torsoRef} position={[0, 0.18, 0]}>
-        <capsuleGeometry args={[0.68, 2.05, 12, 20]} />
-        <meshStandardMaterial
-          color="#ded4ee"
-          metalness={0.72}
-          roughness={0.16}
-        />
+    <group ref={groupRef} rotation={[0, 0, -0.13]}>
+      {/* Barra */}
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.085, 0.085, 4.4, 24]} />
+        <meshStandardMaterial color={BAR} metalness={0.86} roughness={0.22} />
       </mesh>
-      <mesh position={[0, 1.72, 0]}>
-        <sphereGeometry args={[0.42, 24, 24]} />
-        <meshStandardMaterial
-          color="#eae2f7"
-          metalness={0.66}
-          roughness={0.14}
-        />
+      {/* Pega central, levemente mais grossa */}
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.115, 0.115, 1.5, 24]} />
+        <meshStandardMaterial color={BAR} metalness={0.78} roughness={0.34} />
       </mesh>
-      <mesh position={[-0.98, 0.78, 0]} rotation={[0, 0, -0.48]}>
-        <capsuleGeometry args={[0.18, 1.22, 10, 18]} />
-        <meshStandardMaterial
-          color="#cfc2e6"
-          metalness={0.68}
-          roughness={0.2}
-        />
-      </mesh>
-      <mesh position={[0.98, 0.78, 0]} rotation={[0, 0, 0.48]}>
-        <capsuleGeometry args={[0.18, 1.22, 10, 18]} />
-        <meshStandardMaterial
-          color="#ac6ef7"
-          emissive="#2d1152"
-          emissiveIntensity={0.18}
-        />
-      </mesh>
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.24, 0]}>
-        <torusGeometry args={[1.56, 0.06, 18, 80]} />
-        <meshStandardMaterial
-          color="#9649f3"
-          emissive="#310f59"
-          emissiveIntensity={0.32}
-        />
-      </mesh>
-      {weights.map((position) => (
-        <group key={position[0]} position={position}>
-          <mesh>
-            <cylinderGeometry args={[0.34, 0.34, 0.12, 28]} />
-            <meshStandardMaterial
-              color="#9649f3"
-              metalness={0.82}
-              roughness={0.12}
+
+      {[-1, 1].map((side) => (
+        <group key={side}>
+          <Collar x={side * 0.95} radius={0.17} depth={0.16} />
+          {plates.map((p) => (
+            <Plate
+              key={p.offset}
+              x={side * p.offset}
+              radius={p.radius}
+              depth={p.depth}
             />
-          </mesh>
-          <mesh position={[0, 0, position[0] > 0 ? 0.18 : -0.18]}>
-            <cylinderGeometry args={[0.28, 0.28, 0.1, 28]} />
+          ))}
+          <Collar x={side * 1.85} radius={0.16} depth={0.16} />
+          {/* Ponta da barra */}
+          <mesh position={[side * 2.05, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.13, 0.13, 0.24, 24]} />
             <meshStandardMaterial
-              color="#eae2f7"
-              metalness={0.7}
-              roughness={0.12}
+              color={BAR}
+              metalness={0.86}
+              roughness={0.24}
             />
           </mesh>
         </group>
@@ -94,31 +118,38 @@ function Rig() {
   );
 }
 
+/**
+ * Reduz a cena quando o palco e estreito. Sem isso o halter, que e largo,
+ * sai cortado nas laterais em telas pequenas.
+ */
+function FitToViewport({ children }: { children: React.ReactNode }) {
+  const { viewport } = useThree();
+  const scale = Math.min(1, (viewport.width * 0.9) / (HALF_WIDTH * 2));
+  return <group scale={scale}>{children}</group>;
+}
+
 export function HeroScene() {
   return (
     <Canvas
-      camera={{ position: [0, 0.15, 5.1], fov: 34 }}
+      camera={{ position: [0, 0.2, 5.2], fov: 34 }}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ width: "100%", height: "100%" }}
     >
       <color attach="background" args={["#000000"]} />
-      <fog attach="fog" args={["#000000", 6.2, 10.5]} />
-      <ambientLight intensity={1.35} color="#f5f2fa" />
+      <ambientLight intensity={0.9} color="#f5f2fa" />
+      {/* Luz principal, branca, vinda de cima e da frente. */}
       <directionalLight
-        position={[3.8, 4.4, 3.2]}
-        intensity={2.15}
+        position={[3.4, 4.2, 4.2]}
+        intensity={2.4}
         color="#ffffff"
       />
-      <pointLight position={[-2.6, -1.8, 2]} intensity={1.1} color="#9649f3" />
-      <spotLight
-        position={[0, 5.5, 3.5]}
-        angle={0.36}
-        penumbra={0.8}
-        intensity={1.4}
-        color="#ffffff"
-      />
-      <Rig />
+      {/* Contraluz roxa: separa o halter do fundo preto. */}
+      <pointLight position={[-3.2, -1.4, -2]} intensity={2.6} color="#9649f3" />
+      <pointLight position={[2.6, 1.2, -2.4]} intensity={1.4} color="#ac6ef7" />
+      <FitToViewport>
+        <Dumbbell />
+      </FitToViewport>
     </Canvas>
   );
 }

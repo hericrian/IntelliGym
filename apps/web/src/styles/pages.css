@@ -87,11 +87,20 @@
 
 .hero-stage {
   position: relative;
-  min-height: clamp(320px, 42vw, 480px);
+  /* Altura explicita, nao min-height: o Canvas do react-three-fiber entra
+     como filho direto e o height:100% dele nao resolve contra um pai de
+     altura automatica — o canvas colapsaria. */
+  height: clamp(320px, 42vw, 480px);
   border-radius: var(--radius-xl);
   overflow: hidden;
   border: 1px solid var(--border);
   background: linear-gradient(180deg, rgba(18, 16, 20, 0.85), var(--bg));
+}
+
+.hero-stage > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .hero-overlay {

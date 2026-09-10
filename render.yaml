@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: intelligym-api-fastapi
+    runtime: python
+    plan: free
+    region: ohio
+    rootDir: apps/api
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    buildFilter:
+      paths:
+        - apps/api/**
+        - render.yaml
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.4
+      - key: ENVIRONMENT
+        value: production
+      - key: FRONTEND_URL
+        value: https://intelligym.pages.dev
+      - key: BACKEND_CORS_ORIGINS
+        value: https://intelligym.pages.dev
+      - key: FIREBASE_PROJECT_ID
+        value: intelligym-46878
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: AI_PROVIDER
+        value: gemini
+      - key: AI_MODEL
+        value: gemini-2.0-flash
+      - key: AI_API_KEY
+        sync: false
+
+previews:
+  generation: off

@@ -4,5 +4,9 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-09-09",
   "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "ENVIRONMENT": "production",
+    "ALLOWED_ORIGINS": "https://intelligym.pages.dev,http://localhost:5173"
+  },
   "observability": { "enabled": true, "head_sampling_rate": 1 }
 }

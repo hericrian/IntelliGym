@@ -2,16 +2,19 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { AuthCard } from "../components/AuthCard";
+import { IconGoogle } from "../components/Icons";
+import { hasFirebaseConfig } from "../config/firebase";
 import { useAuth } from "../hooks/useAuth";
 
 export function SignupPage() {
-  const { signUp, error, loading } = useAuth();
+  const { signUp, signInWithGoogle, error, loading } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const weakPassword = password.length > 0 && password.length < 6;
+  const firebaseReady = hasFirebaseConfig();
 
   return (
     <AuthCard
@@ -79,6 +82,23 @@ export function SignupPage() {
         ) : (
           "Cadastrar"
         )}
+      </button>
+
+      <span className="auth-divider">ou</span>
+
+      <button
+        className="hero-button hero-button--secondary"
+        type="button"
+        disabled={loading}
+        onClick={async () => {
+          await signInWithGoogle();
+          navigate("/app/onboarding", { replace: true });
+        }}
+      >
+        <IconGoogle />
+        {firebaseReady
+          ? "Cadastrar com Google"
+          : "Experimentar em modo demonstração"}
       </button>
     </AuthCard>
   );

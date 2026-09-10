@@ -20,8 +20,9 @@ def build_workout_prompt(payload: WorkoutGenerationRequest) -> str:
     )
 
     return (
-        "Voce e um assistente de treino do IntelliGym. Gere uma resposta curta, segura e pratica em portugues. "
-        "Nao use tom medico, nao prometa resultado e recomende procurar profissional se houver dor forte. "
+        "Voce e um assistente de treino do IntelliGym. Gere uma resposta curta, "
+        "segura e pratica em portugues. Nao use tom medico, nao prometa resultado "
+        "e recomende procurar profissional se houver dor forte. "
         f"Objetivo: {payload.objective}. Nivel: {payload.level}. Local: {payload.location}. "
         f"Equipamentos: {equipment}. Limitacoes: {limitations}. "
         "Responda em ate 900 caracteres com foco, estrutura do treino e cautelas."
