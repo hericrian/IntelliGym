@@ -320,7 +320,7 @@ function ProgressMetricCard({
             cy="45"
             r="35"
             fill="none"
-            stroke="#20384E"
+            stroke="#2A2533"
             strokeWidth="8"
           />
           <circle
@@ -361,7 +361,7 @@ const styles: Record<string, CSSProperties> = {
   page: {
     minHeight: "100%",
     background:
-      "radial-gradient(circle at top, rgba(56, 120, 84, 0.18), transparent 28%), #07111A",
+      "radial-gradient(circle at top, rgba(56, 120, 84, 0.18), transparent 28%), #000000",
     color: colors.text,
     padding: "28px 24px 80px"
   },
@@ -371,7 +371,7 @@ const styles: Record<string, CSSProperties> = {
     borderRadius: "36px",
     border: `1px solid ${colors.border}`,
     background:
-      "linear-gradient(160deg, rgba(15,29,43,0.95) 0%, rgba(8,18,28,0.98) 55%, rgba(11,20,30,1) 100%)",
+      "linear-gradient(160deg, rgba(33,29,38,0.95) 0%, rgba(18,16,20,0.98) 55%, rgba(21,18,24,1) 100%)",
     boxShadow: "0 24px 80px rgba(0,0,0,0.34)",
     padding: "36px",
     maxWidth: "1280px",
@@ -409,7 +409,7 @@ const styles: Record<string, CSSProperties> = {
     padding: "10px 14px",
     borderRadius: "999px",
     border: "1px solid rgba(112,240,197,0.25)",
-    background: "rgba(18,37,56,0.75)",
+    background: "rgba(42,37,51,0.75)",
     color: colors.accentSoft,
     fontSize: "12px",
     fontWeight: 800,
@@ -450,7 +450,7 @@ const styles: Record<string, CSSProperties> = {
     boxShadow: "0 14px 34px rgba(51,230,165,0.18)"
   },
   secondaryButton: {
-    background: "rgba(19,38,55,0.88)",
+    background: "rgba(42,37,51,0.88)",
     color: colors.text,
     border: `1px solid ${colors.border}`,
     boxShadow: "none"
@@ -466,7 +466,7 @@ const styles: Record<string, CSSProperties> = {
     padding: "10px 14px",
     borderRadius: "999px",
     border: `1px solid ${colors.border}`,
-    background: "rgba(22,43,62,0.78)",
+    background: "rgba(48,42,58,0.78)",
     color: colors.text,
     fontSize: "0.86rem",
     fontWeight: 700
@@ -483,7 +483,7 @@ const styles: Record<string, CSSProperties> = {
     borderRadius: "28px",
     overflow: "hidden",
     background:
-      "linear-gradient(180deg, rgba(11, 24, 36, 0.8) 0%, rgba(8, 17, 26, 1) 100%)",
+      "linear-gradient(180deg, rgba(24, 21, 28, 0.8) 0%, rgba(8, 17, 26, 1) 100%)",
     border: `1px solid ${colors.border}`
   },
   visualOverlay: {
@@ -496,7 +496,7 @@ const styles: Record<string, CSSProperties> = {
     gap: "6px",
     padding: "16px 18px",
     borderRadius: "22px",
-    background: "rgba(7, 17, 26, 0.76)",
+    background: "rgba(15, 13, 17, 0.76)",
     backdropFilter: "blur(12px)",
     border: `1px solid rgba(112,240,197,0.12)`
   },
@@ -521,7 +521,7 @@ const styles: Record<string, CSSProperties> = {
     height: "100%",
     minHeight: "clamp(360px, 54vw, 560px)",
     background:
-      "radial-gradient(circle at 50% 32%, rgba(112,240,197,0.14), transparent 26%), linear-gradient(180deg, rgba(10,18,28,0.6), rgba(7,17,26,1))"
+      "radial-gradient(circle at 50% 32%, rgba(112,240,197,0.14), transparent 26%), linear-gradient(180deg, rgba(10,18,28,0.6), rgba(15,13,17,1))"
   },
   fallbackCore: {
     position: "absolute",
@@ -532,7 +532,7 @@ const styles: Record<string, CSSProperties> = {
     transform: "translate(-50%, -50%)",
     borderRadius: "100px 100px 80px 80px",
     background:
-      "linear-gradient(180deg, rgba(243,247,251,0.95), rgba(182,195,210,0.65) 55%, rgba(70,82,95,0.3))",
+      "linear-gradient(180deg, rgba(243,247,251,0.95), rgba(168,163,179,0.65) 55%, rgba(80,75,88,0.3))",
     boxShadow: "0 30px 60px rgba(0,0,0,0.24)"
   },
   fallbackRing: {
@@ -602,7 +602,7 @@ const styles: Record<string, CSSProperties> = {
     padding: "22px",
     borderRadius: "28px",
     background:
-      "linear-gradient(180deg, rgba(15,29,43,0.96), rgba(11,20,30,1))",
+      "linear-gradient(180deg, rgba(33,29,38,0.96), rgba(21,18,24,1))",
     border: `1px solid ${colors.border}`,
     minHeight: "220px"
   },
@@ -610,7 +610,7 @@ const styles: Record<string, CSSProperties> = {
     display: "inline-flex",
     padding: "9px 12px",
     borderRadius: "999px",
-    background: "rgba(18,37,56,0.86)",
+    background: "rgba(42,37,51,0.86)",
     color: colors.accentSoft,
     fontWeight: 800,
     fontSize: "0.74rem"
@@ -637,7 +637,7 @@ const styles: Record<string, CSSProperties> = {
     padding: "22px",
     borderRadius: "26px",
     background:
-      "linear-gradient(180deg, rgba(15,29,43,0.96), rgba(11,20,30,1))",
+      "linear-gradient(180deg, rgba(33,29,38,0.96), rgba(21,18,24,1))",
     border: `1px solid ${colors.border}`
   },
   ringWrap: {

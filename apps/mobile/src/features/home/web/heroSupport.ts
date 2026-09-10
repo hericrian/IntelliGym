@@ -52,19 +52,19 @@ export function getHeroMetrics(
     {
       label: "Aderencia semanal",
       value: progress.adherencePercent,
-      accent: "#33E6A5",
+      accent: "#9649F3",
       subtitle: `${progress.weeklySessions} de 4 sessoes planejadas`
     },
     {
       label: "Conforto articular",
       value: Math.max(0, 100 - progress.painAverage * 10),
-      accent: "#FFB366",
+      accent: "#FFBE7A",
       subtitle: `Dor media ${progress.painAverage}/10`
     },
     {
       label: "Conclusao do treino",
       value: Math.min(100, workout.weeklyTrainedDays * 28),
-      accent: "#B9C6D3",
+      accent: "#A8A3B3",
       subtitle: `${workout.weeklyTrainedDays} dias treinados nesta semana`
     }
   ];

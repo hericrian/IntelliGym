@@ -10,10 +10,10 @@ type LogoProps = {
   priority?: boolean;
 };
 
-// Proporção da arte original (640 x 193 após o recorte).
-const RATIO = 640 / 193;
-// O halter ocupa os primeiros ~14% da largura da arte.
-const COMPACT_RATIO = 0.145;
+// Proporção da arte original (589 x 192 após o recorte).
+const RATIO = 589 / 192;
+// O halter ocupa os primeiros ~36% da largura da arte.
+const COMPACT_RATIO = 0.362;
 
 export function Logo({
   variant = "wordmark",

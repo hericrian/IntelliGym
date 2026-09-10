@@ -39,7 +39,7 @@ function HeroRig(): JSX.Element {
       <mesh ref={torsoRef} position={[0, 0.12, 0]}>
         <capsuleGeometry args={[0.72, 2.1, 14, 22]} />
         <meshStandardMaterial
-          color="#dce5ee"
+          color="#ded4ee"
           metalness={0.32}
           roughness={0.2}
         />
@@ -48,7 +48,7 @@ function HeroRig(): JSX.Element {
       <mesh position={[0, 1.72, 0]}>
         <sphereGeometry args={[0.42, 24, 24]} />
         <meshStandardMaterial
-          color="#eff4f8"
+          color="#efe9f7"
           metalness={0.2}
           roughness={0.12}
         />
@@ -57,7 +57,7 @@ function HeroRig(): JSX.Element {
       <mesh position={[-1.02, 0.78, 0]} rotation={[0, 0, -0.48]}>
         <capsuleGeometry args={[0.18, 1.26, 10, 18]} />
         <meshStandardMaterial
-          color="#ccd6df"
+          color="#cfc2e6"
           metalness={0.28}
           roughness={0.24}
         />
@@ -66,8 +66,8 @@ function HeroRig(): JSX.Element {
       <mesh position={[1.02, 0.78, 0]} rotation={[0, 0, 0.48]}>
         <capsuleGeometry args={[0.18, 1.26, 10, 18]} />
         <meshStandardMaterial
-          color="#8ad6b2"
-          emissive="#1e6a53"
+          color="#9649f3"
+          emissive="#4a1f85"
           emissiveIntensity={0.2}
         />
       </mesh>
@@ -79,8 +79,8 @@ function HeroRig(): JSX.Element {
       >
         <torusGeometry args={[1.62, 0.06, 18, 80]} />
         <meshStandardMaterial
-          color="#7be0b8"
-          emissive="#225944"
+          color="#ac6ef7"
+          emissive="#401772"
           emissiveIntensity={0.45}
         />
       </mesh>
@@ -90,7 +90,7 @@ function HeroRig(): JSX.Element {
           <mesh>
             <cylinderGeometry args={[0.34, 0.34, 0.14, 32]} />
             <meshStandardMaterial
-              color="#7be0b8"
+              color="#ac6ef7"
               metalness={0.42}
               roughness={0.18}
             />
@@ -98,7 +98,7 @@ function HeroRig(): JSX.Element {
           <mesh position={[0, 0, position[0] > 0 ? 0.2 : -0.2]}>
             <cylinderGeometry args={[0.28, 0.28, 0.1, 32]} />
             <meshStandardMaterial
-              color="#f4f7fb"
+              color="#f4f0fa"
               metalness={0.25}
               roughness={0.15}
             />
@@ -117,15 +117,15 @@ export default function WebHeroScene() {
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ width: "100%", height: "100%" }}
     >
-      <color attach="background" args={["#09131b"]} />
-      <fog attach="fog" args={["#09131b", 6.2, 10.5]} />
-      <ambientLight intensity={1.35} color="#f2f7fb" />
+      <color attach="background" args={["#000000"]} />
+      <fog attach="fog" args={["#000000", 6.2, 10.5]} />
+      <ambientLight intensity={1.35} color="#f2eefa" />
       <directionalLight
         position={[3.8, 4.4, 3.2]}
         intensity={2.2}
-        color="#f7fbff"
+        color="#f8f5fd"
       />
-      <pointLight position={[-2.6, -1.8, 2]} intensity={1.2} color="#7be0b8" />
+      <pointLight position={[-2.6, -1.8, 2]} intensity={1.2} color="#ac6ef7" />
       <spotLight
         position={[0, 5.5, 3.5]}
         angle={0.36}
