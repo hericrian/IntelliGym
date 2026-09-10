@@ -2,7 +2,11 @@ import type { HealthCheckResponse } from "@intelligym/shared";
 
 import type { WorkoutPlan } from "../mocks/intelligym";
 
-const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
+const productionApiUrl = "https://intelligym-api-fastapi.onrender.com";
+const apiBaseUrl =
+  window.location.hostname === "intelligym.pages.dev"
+    ? productionApiUrl
+    : (import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000");
 
 export async function fetchHealth(): Promise<HealthCheckResponse> {
   const response = await fetch(`${apiBaseUrl}/health`);

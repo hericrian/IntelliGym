@@ -1,6 +1,10 @@
 import { firebaseAuth } from "../config/firebase";
 
-const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const productionApiUrl = "https://intelligym-api-fastapi.onrender.com";
+const apiBaseUrl =
+  window.location.hostname === "intelligym.pages.dev"
+    ? productionApiUrl
+    : (import.meta.env.VITE_API_URL ?? "http://localhost:8000");
 
 async function buildHeaders(): Promise<HeadersInit> {
   const headers: HeadersInit = {
