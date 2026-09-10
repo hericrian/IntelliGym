@@ -4,15 +4,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "dev": "wrangler dev --local",
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "deploy": "wrangler deploy --minify --keep-vars",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "types": "wrangler types",
+    "lint": "eslint src test --ext .ts",
     "test": "vitest run",
-    "db:local": "wrangler d1 execute intelligym --local --file=./migrations/0001_init.sql",
-    "db:remote": "wrangler d1 execute intelligym --remote --file=./migrations/0001_init.sql"
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"wrangler.jsonc\"",
+    "db:local": "wrangler d1 migrations apply intelligym --local",
+    "db:remote": "wrangler d1 migrations apply intelligym --remote"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250109.0",
-    "wrangler": "^3.99.0"
+    "@cloudflare/workers-types": "^4.20250909.0",
+    "wrangler": "^4.37.1"
   }
 }

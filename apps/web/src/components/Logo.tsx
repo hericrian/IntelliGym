@@ -10,13 +10,11 @@ type LogoProps = {
   priority?: boolean;
 };
 
-/* Medidas da arte em public/logo.png (400 × 267). Ficam aqui, num só lugar,
-   para o dia em que a marca for trocada. */
-const ART_RATIO = 400 / 267;
-/** Fração da altura da arte ocupada pelo halter, antes do wordmark começar. */
-const MARK_HEIGHT_FRACTION = 0.655;
-/** O halter usa a largura toda da arte, então o recorte fica largo e baixo. */
-const COMPACT_RATIO = ART_RATIO / MARK_HEIGHT_FRACTION;
+/* Medidas da arte em public/logo.png. Ficam aqui, num só lugar, para o dia em
+   que a marca for trocada. */
+const ART_RATIO = 589 / 192;
+/** O halter ocupa os ~36% iniciais da largura; o resto é o wordmark. */
+const MARK_WIDTH_FRACTION = 0.362;
 
 export function Logo({
   variant = "wordmark",
@@ -24,6 +22,8 @@ export function Logo({
   className,
   priority
 }: LogoProps) {
+  const fullWidth = height * ART_RATIO;
+
   if (variant === "compact") {
     return (
       <span
@@ -31,12 +31,12 @@ export function Logo({
         role="img"
         aria-label="IntelliGym"
         style={{
-          width: Math.round(height * COMPACT_RATIO),
+          width: Math.round(fullWidth * MARK_WIDTH_FRACTION),
           height,
           backgroundImage: `url(${logoUrl})`,
-          // Encaixa a largura da arte na caixa e corta o wordmark embaixo.
-          backgroundSize: "100% auto",
-          backgroundPosition: "top center",
+          // Encaixa a altura da arte na caixa e corta o wordmark à direita.
+          backgroundSize: "auto 100%",
+          backgroundPosition: "left center",
           backgroundRepeat: "no-repeat"
         }}
       />
@@ -48,7 +48,7 @@ export function Logo({
       className={`logo ${className ?? ""}`}
       src={logoUrl}
       alt="IntelliGym"
-      width={Math.round(height * ART_RATIO)}
+      width={Math.round(fullWidth)}
       height={height}
       decoding="async"
       loading={priority ? "eager" : "lazy"}

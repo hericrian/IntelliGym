@@ -1,0 +1,8 @@
+# Gerado pelo wrangler (`npm --workspace apps/worker run types`).
+apps/worker/worker-configuration.d.ts
+
+# Artefatos de build e dependências.
+**/dist/**
+**/node_modules/**
+**/.wrangler/**
+package-lock.json

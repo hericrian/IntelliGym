@@ -12,18 +12,22 @@ export function NativeCompatibilityScreen() {
         <Text style={styles.kicker}>IntelliGym</Text>
         <Text style={styles.title}>Modo de compatibilidade nativo</Text>
         <Text style={styles.body}>
-          Estamos isolando um bug do Expo Go no iPhone relacionado ao runtime nativo do
-          SDK 54. A versao web premium continua preservada, e esta tela garante que o app
-          abra corretamente enquanto finalizamos o ajuste fino para iOS.
+          Estamos isolando um bug do Expo Go no iPhone relacionado ao runtime
+          nativo do SDK 54. A versao web premium continua preservada, e esta
+          tela garante que o app abra corretamente enquanto finalizamos o ajuste
+          fino para iOS.
         </Text>
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{selectedWorkout.title}</Text>
           <Text style={styles.cardText}>
-            {selectedWorkout.estimatedDurationMin} min · dor media {selectedWorkout.weeklyPainAverage}
+            {selectedWorkout.estimatedDurationMin} min · dor media{" "}
+            {selectedWorkout.weeklyPainAverage}
             /10
           </Text>
-          <Text style={styles.cardText}>Fase atual: {progress.currentPhase}</Text>
+          <Text style={styles.cardText}>
+            Fase atual: {progress.currentPhase}
+          </Text>
         </View>
 
         <Pressable
@@ -31,7 +35,11 @@ export function NativeCompatibilityScreen() {
             completeOnboarding({
               goal: "Recuperacao e fortalecimento",
               trainingLocation: "home",
-              equipments: ["bicicleta ergometrica", "halteres", "faixas elasticas"],
+              equipments: [
+                "bicicleta ergometrica",
+                "halteres",
+                "faixas elasticas"
+              ],
               availableDays: 4,
               sessionDurationMin: 45,
               experienceLevel: "intermediate",
@@ -44,8 +52,8 @@ export function NativeCompatibilityScreen() {
         </Pressable>
 
         <Text style={styles.footnote}>
-          Proximo passo: recolocar progressivamente as telas completas no native ate achar o
-          componente exato que dispara o erro `onModeChange`.
+          Proximo passo: recolocar progressivamente as telas completas no native
+          ate achar o componente exato que dispara o erro `onModeChange`.
         </Text>
       </View>
     </SafeAreaView>

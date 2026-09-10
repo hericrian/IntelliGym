@@ -47,7 +47,9 @@ function buildProfileFromAnswers(answers: OnboardingAnswers): UserProfile {
     experienceLevel: answers.experienceLevel,
     equipments: answers.equipments,
     limitations:
-      answers.limitations.length > 0 ? answers.limitations : demoOnboarding.profile.limitations
+      answers.limitations.length > 0
+        ? answers.limitations
+        : demoOnboarding.profile.limitations
   };
 }
 
@@ -74,7 +76,11 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     [activeTab, isOnboardingComplete, profile]
   );
 
-  return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
+  return (
+    <AppStateContext.Provider value={value}>
+      {children}
+    </AppStateContext.Provider>
+  );
 }
 
 export function useAppState() {

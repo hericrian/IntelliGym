@@ -17,7 +17,10 @@ export function HomeScreen() {
     () => supportsWebGL({ disableAnimations: Boolean(shouldReduceMotion) }),
     [shouldReduceMotion]
   );
-  const metrics = useMemo(() => getHeroMetrics(progress, selectedWorkout), [progress, selectedWorkout]);
+  const metrics = useMemo(
+    () => getHeroMetrics(progress, selectedWorkout),
+    [progress, selectedWorkout]
+  );
   const heroScopeRef = useRef<HTMLDivElement | null>(null);
   const statsScopeRef = useRef<HTMLDivElement | null>(null);
 
@@ -39,8 +42,12 @@ export function HomeScreen() {
       });
     });
 
-    const statTargets = Array.from(statsNode.querySelectorAll<HTMLElement>("[data-value-target]"));
-    const lineTargets = Array.from(statsNode.querySelectorAll<SVGCircleElement>("[data-ring-length]"));
+    const statTargets = Array.from(
+      statsNode.querySelectorAll<HTMLElement>("[data-value-target]")
+    );
+    const lineTargets = Array.from(
+      statsNode.querySelectorAll<SVGCircleElement>("[data-ring-length]")
+    );
 
     statTargets.forEach((element) => {
       const target = Number(element.dataset.valueTarget ?? "0");
@@ -96,7 +103,8 @@ export function HomeScreen() {
               transition={{ duration: 0.8, delay: 0.08, ease: "easeOut" }}
               style={styles.heroTitle}
             >
-              Treino inteligente para evoluir com mais seguranca, consistencia e contexto.
+              Treino inteligente para evoluir com mais seguranca, consistencia e
+              contexto.
             </motion.h1>
             <motion.p
               initial={shouldReduceMotion ? false : { opacity: 0, y: 22 }}
@@ -104,12 +112,15 @@ export function HomeScreen() {
               transition={{ duration: 0.72, delay: 0.16, ease: "easeOut" }}
               style={styles.heroDescription}
             >
-              Uma experiencia premium para casa, academia e recuperacao funcional, com
-              base preparada para IA, camera, progressao segura e crescimento real do
-              produto.
+              Uma experiencia premium para casa, academia e recuperacao
+              funcional, com base preparada para IA, camera, progressao segura e
+              crescimento real do produto.
             </motion.p>
             <div style={styles.ctaRow}>
-              <HeroButton label="Comecar agora" onClick={() => setActiveTab("workout")} />
+              <HeroButton
+                label="Comecar agora"
+                onClick={() => setActiveTab("workout")}
+              />
               <HeroButton
                 label="Conhecer o aplicativo"
                 onClick={() => setActiveTab("progress")}
@@ -117,9 +128,14 @@ export function HomeScreen() {
               />
             </div>
             <div style={styles.metricPills}>
-              <MetricPill label={`${selectedWorkout.estimatedDurationMin} min`} />
+              <MetricPill
+                label={`${selectedWorkout.estimatedDurationMin} min`}
+              />
               <MetricPill label={`${totalSets(selectedWorkout)} series`} />
-              <MetricPill label={`Dor ${painBadge(selectedWorkout.weeklyPainAverage)}`} warning />
+              <MetricPill
+                label={`Dor ${painBadge(selectedWorkout.weeklyPainAverage)}`}
+                warning
+              />
             </div>
           </motion.div>
 
@@ -139,9 +155,12 @@ export function HomeScreen() {
               )}
               <div style={styles.visualOverlay}>
                 <span style={styles.overlayEyebrow}>Modo premium</span>
-                <strong style={styles.overlayTitle}>Treino em casa, academia e recuperacao</strong>
+                <strong style={styles.overlayTitle}>
+                  Treino em casa, academia e recuperacao
+                </strong>
                 <span style={styles.overlayText}>
-                  Visual rico na web, com fallback leve e profissional no mobile ou sem WebGL.
+                  Visual rico na web, com fallback leve e profissional no mobile
+                  ou sem WebGL.
                 </span>
               </div>
             </div>
@@ -161,7 +180,9 @@ export function HomeScreen() {
       <section style={styles.section}>
         <div style={styles.sectionHeader}>
           <span style={styles.sectionKicker}>Experiencias</span>
-          <h2 style={styles.sectionTitle}>Tres caminhos claros para usar o IntelliGym</h2>
+          <h2 style={styles.sectionTitle}>
+            Tres caminhos claros para usar o IntelliGym
+          </h2>
         </div>
         <div style={styles.cardGrid}>
           {[
@@ -181,9 +202,15 @@ export function HomeScreen() {
             <motion.article
               key={item.title}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 30 }}
-              whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+              whileInView={
+                shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
+              }
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.65, delay: 0.08 * index, ease: "easeOut" }}
+              transition={{
+                duration: 0.65,
+                delay: 0.08 * index,
+                ease: "easeOut"
+              }}
               style={styles.featureCard}
             >
               <span className="hero-pill" style={styles.cardIndex}>
@@ -199,7 +226,9 @@ export function HomeScreen() {
       <section style={styles.section}>
         <div style={styles.sectionHeader}>
           <span style={styles.sectionKicker}>Indicadores</span>
-          <h2 style={styles.sectionTitle}>Microanimacoes com utilidade, nao so efeito</h2>
+          <h2 style={styles.sectionTitle}>
+            Microanimacoes com utilidade, nao so efeito
+          </h2>
         </div>
         <div style={styles.progressGrid} ref={statsScopeRef}>
           {metrics.map((metric) => (
@@ -242,7 +271,13 @@ function HeroButton({
   );
 }
 
-function MetricPill({ label, warning = false }: { label: string; warning?: boolean }) {
+function MetricPill({
+  label,
+  warning = false
+}: {
+  label: string;
+  warning?: boolean;
+}) {
   return (
     <div
       className="hero-pill"
@@ -280,7 +315,14 @@ function ProgressMetricCard({
     >
       <div style={styles.ringWrap}>
         <svg width="90" height="90" viewBox="0 0 90 90" aria-hidden="true">
-          <circle cx="45" cy="45" r="35" fill="none" stroke="#20384E" strokeWidth="8" />
+          <circle
+            cx="45"
+            cy="45"
+            r="35"
+            fill="none"
+            stroke="#2A2533"
+            strokeWidth="8"
+          />
           <circle
             cx="45"
             cy="45"
@@ -319,7 +361,7 @@ const styles: Record<string, CSSProperties> = {
   page: {
     minHeight: "100%",
     background:
-      "radial-gradient(circle at top, rgba(56, 120, 84, 0.18), transparent 28%), #07111A",
+      "radial-gradient(circle at top, rgba(56, 120, 84, 0.18), transparent 28%), #000000",
     color: colors.text,
     padding: "28px 24px 80px"
   },
@@ -329,7 +371,7 @@ const styles: Record<string, CSSProperties> = {
     borderRadius: "36px",
     border: `1px solid ${colors.border}`,
     background:
-      "linear-gradient(160deg, rgba(15,29,43,0.95) 0%, rgba(8,18,28,0.98) 55%, rgba(11,20,30,1) 100%)",
+      "linear-gradient(160deg, rgba(33,29,38,0.95) 0%, rgba(18,16,20,0.98) 55%, rgba(21,18,24,1) 100%)",
     boxShadow: "0 24px 80px rgba(0,0,0,0.34)",
     padding: "36px",
     maxWidth: "1280px",
@@ -367,7 +409,7 @@ const styles: Record<string, CSSProperties> = {
     padding: "10px 14px",
     borderRadius: "999px",
     border: "1px solid rgba(112,240,197,0.25)",
-    background: "rgba(18,37,56,0.75)",
+    background: "rgba(42,37,51,0.75)",
     color: colors.accentSoft,
     fontSize: "12px",
     fontWeight: 800,
@@ -408,7 +450,7 @@ const styles: Record<string, CSSProperties> = {
     boxShadow: "0 14px 34px rgba(51,230,165,0.18)"
   },
   secondaryButton: {
-    background: "rgba(19,38,55,0.88)",
+    background: "rgba(42,37,51,0.88)",
     color: colors.text,
     border: `1px solid ${colors.border}`,
     boxShadow: "none"
@@ -424,7 +466,7 @@ const styles: Record<string, CSSProperties> = {
     padding: "10px 14px",
     borderRadius: "999px",
     border: `1px solid ${colors.border}`,
-    background: "rgba(22,43,62,0.78)",
+    background: "rgba(48,42,58,0.78)",
     color: colors.text,
     fontSize: "0.86rem",
     fontWeight: 700
@@ -441,7 +483,7 @@ const styles: Record<string, CSSProperties> = {
     borderRadius: "28px",
     overflow: "hidden",
     background:
-      "linear-gradient(180deg, rgba(11, 24, 36, 0.8) 0%, rgba(8, 17, 26, 1) 100%)",
+      "linear-gradient(180deg, rgba(24, 21, 28, 0.8) 0%, rgba(8, 17, 26, 1) 100%)",
     border: `1px solid ${colors.border}`
   },
   visualOverlay: {
@@ -454,7 +496,7 @@ const styles: Record<string, CSSProperties> = {
     gap: "6px",
     padding: "16px 18px",
     borderRadius: "22px",
-    background: "rgba(7, 17, 26, 0.76)",
+    background: "rgba(15, 13, 17, 0.76)",
     backdropFilter: "blur(12px)",
     border: `1px solid rgba(112,240,197,0.12)`
   },
@@ -479,7 +521,7 @@ const styles: Record<string, CSSProperties> = {
     height: "100%",
     minHeight: "clamp(360px, 54vw, 560px)",
     background:
-      "radial-gradient(circle at 50% 32%, rgba(112,240,197,0.14), transparent 26%), linear-gradient(180deg, rgba(10,18,28,0.6), rgba(7,17,26,1))"
+      "radial-gradient(circle at 50% 32%, rgba(112,240,197,0.14), transparent 26%), linear-gradient(180deg, rgba(10,18,28,0.6), rgba(15,13,17,1))"
   },
   fallbackCore: {
     position: "absolute",
@@ -490,7 +532,7 @@ const styles: Record<string, CSSProperties> = {
     transform: "translate(-50%, -50%)",
     borderRadius: "100px 100px 80px 80px",
     background:
-      "linear-gradient(180deg, rgba(243,247,251,0.95), rgba(182,195,210,0.65) 55%, rgba(70,82,95,0.3))",
+      "linear-gradient(180deg, rgba(243,247,251,0.95), rgba(168,163,179,0.65) 55%, rgba(80,75,88,0.3))",
     boxShadow: "0 30px 60px rgba(0,0,0,0.24)"
   },
   fallbackRing: {
@@ -521,7 +563,8 @@ const styles: Record<string, CSSProperties> = {
     top: "50%",
     transform: "translate(-50%, -50%)",
     borderRadius: "50%",
-    background: "radial-gradient(circle, rgba(51,230,165,0.08), transparent 62%)"
+    background:
+      "radial-gradient(circle, rgba(51,230,165,0.08), transparent 62%)"
   },
   scrollHint: {
     position: "relative",
@@ -558,7 +601,8 @@ const styles: Record<string, CSSProperties> = {
   featureCard: {
     padding: "22px",
     borderRadius: "28px",
-    background: "linear-gradient(180deg, rgba(15,29,43,0.96), rgba(11,20,30,1))",
+    background:
+      "linear-gradient(180deg, rgba(33,29,38,0.96), rgba(21,18,24,1))",
     border: `1px solid ${colors.border}`,
     minHeight: "220px"
   },
@@ -566,7 +610,7 @@ const styles: Record<string, CSSProperties> = {
     display: "inline-flex",
     padding: "9px 12px",
     borderRadius: "999px",
-    background: "rgba(18,37,56,0.86)",
+    background: "rgba(42,37,51,0.86)",
     color: colors.accentSoft,
     fontWeight: 800,
     fontSize: "0.74rem"
@@ -592,7 +636,8 @@ const styles: Record<string, CSSProperties> = {
     alignItems: "flex-start",
     padding: "22px",
     borderRadius: "26px",
-    background: "linear-gradient(180deg, rgba(15,29,43,0.96), rgba(11,20,30,1))",
+    background:
+      "linear-gradient(180deg, rgba(33,29,38,0.96), rgba(21,18,24,1))",
     border: `1px solid ${colors.border}`
   },
   ringWrap: {

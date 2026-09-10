@@ -1,18 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="0.35" y2="1">
-      <stop offset="0" stop-color="#b98cff"/>
-      <stop offset="0.45" stop-color="#7a3ee1"/>
-      <stop offset="1" stop-color="#4b1f96"/>
-    </linearGradient>
-  </defs>
-  <rect width="512" height="512" rx="112" fill="#130d1d"/>
-  <g fill="url(#g)" stroke="#f3ecff" stroke-width="9" stroke-linejoin="round">
-    <rect x="62" y="198" width="44" height="116" rx="20"/>
-    <rect x="112" y="162" width="54" height="188" rx="24"/>
-    <rect x="346" y="162" width="54" height="188" rx="24"/>
-    <rect x="406" y="198" width="44" height="116" rx="20"/>
-    <rect x="160" y="230" width="192" height="52" rx="24"/>
+  <rect width="512" height="512" rx="112" fill="#000000"/>
+  <g fill="#7c3aed">
+    <rect x="60" y="196" width="46" height="120" rx="18"/>
+    <rect x="114" y="164" width="52" height="184" rx="22"/>
+    <rect x="346" y="164" width="52" height="184" rx="22"/>
+    <rect x="406" y="196" width="46" height="120" rx="18"/>
+    <rect x="158" y="230" width="196" height="52" rx="24"/>
   </g>
-  <path d="M262 86l-34 62h26l-14 44 40-60h-26l8-46Z" fill="#b98cff"/>
+  <g fill="#ffffff">
+    <rect x="158" y="230" width="196" height="14" rx="7"/>
+  </g>
 </svg>

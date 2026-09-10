@@ -6,9 +6,9 @@
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true, "head_sampling_rate": 1 },
 
-  // Banco de dados. Crie com:
-  //   npx wrangler d1 create intelligym
-  // e cole o database_id devolvido pelo comando.
+  // Banco de dados dos usuários (perfil, equipamentos, planos, dor, sessões).
+  // Crie uma vez com `npx wrangler d1 create intelligym` e cole aqui o
+  // database_id devolvido pelo comando.
   "d1_databases": [
     {
       "binding": "DB",
@@ -18,9 +18,11 @@
     }
   ],
 
-  // Projeto do Firebase usado para validar o ID token. Não é segredo:
-  // aparece no bundle do frontend também.
   "vars": {
-    "FIREBASE_PROJECT_ID": ""
+    "ENVIRONMENT": "production",
+    "ALLOWED_ORIGINS": "https://intelligym.pages.dev,http://localhost:5173,http://localhost:4173",
+    // Projeto do Firebase usado para validar a claim `aud` do ID token.
+    // Não é segredo: também aparece no bundle do frontend.
+    "FIREBASE_PROJECT_ID": "intelligym-46878"
   }
 }

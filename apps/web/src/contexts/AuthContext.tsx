@@ -15,7 +15,10 @@ import {
   requestPasswordReset,
   subscribeToAuthState
 } from "../services/auth.service";
-import { getUserProfile } from "../services/firestore.service";
+import {
+  createUserDocuments,
+  getUserProfile
+} from "../services/firestore.service";
 import type {
   AuthContextValue,
   AuthCredentials,
@@ -163,9 +166,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setInitialized(true);
 
       if (nextUser) {
-        const nextProfile = await getUserProfile(nextUser.uid).catch(
-          () => null
-        );
+        let nextProfile = await getUserProfile(nextUser.uid).catch(() => null);
+
+        if (!nextProfile) {
+          await createUserDocuments({
+            uid: nextUser.uid,
+            email: nextUser.email ?? "",
+            displayName: nextUser.displayName ?? "Usuário IntelliGym",
+            photoURL: nextUser.photoURL
+          }).catch(() => undefined);
+          nextProfile = await getUserProfile(nextUser.uid).catch(() => null);
+        }
+
         setProfile(nextProfile);
       } else {
         setProfile(null);

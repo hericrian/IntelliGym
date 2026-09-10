@@ -24,4 +24,6 @@ firebase-debug.log
 .vercel/
 .turbo/
 .vite/
+.wrangler/
 .DS_Store
+.claude/

@@ -23,7 +23,7 @@
   background-color: var(--surface-1);
   background-image: linear-gradient(
     180deg,
-    rgba(190, 154, 255, 0.045),
+    rgba(190, 175, 215, 0.035),
     transparent 120px
   );
 }

@@ -125,8 +125,16 @@ export const demoWeeklyProgress: WeeklyProgressSummary = {
   effortAverage: 6.5,
   adherencePercent: 83,
   metrics: [
-    { label: "Dor media", value: "3/10", highlight: "melhor que semana passada" },
-    { label: "Tempo total", value: "138 min", highlight: "consistencia mantida" },
+    {
+      label: "Dor media",
+      value: "3/10",
+      highlight: "melhor que semana passada"
+    },
+    {
+      label: "Tempo total",
+      value: "138 min",
+      highlight: "consistencia mantida"
+    },
     { label: "Frequencia", value: "4x/sem", highlight: "meta quase completa" }
   ]
 };
@@ -151,22 +159,21 @@ export const demoInjuryJourney: InjuryRecoveryPlan = {
 const coachSuggestions: CoachSuggestion[] = [
   {
     title: "Ajuste automatico sugerido",
-    body:
-      "Seu ultimo treino teve dor leve no plano lateral. A sugestao de hoje reduz impactos e reforca controle de joelho."
+    body: "Seu ultimo treino teve dor leve no plano lateral. A sugestao de hoje reduz impactos e reforca controle de joelho."
   },
   {
     title: "Alternativa pronta",
-    body:
-      "Se a extensao terminal incomodar, troque por isometria de quadriceps por 20 a 30 segundos."
+    body: "Se a extensao terminal incomodar, troque por isometria de quadriceps por 20 a 30 segundos."
   },
   {
     title: "Aviso de seguranca",
-    body:
-      "Dor forte, inchaço, travamento ou perda de forca exigem avaliacao de um profissional."
+    body: "Dor forte, inchaço, travamento ou perda de forca exigem avaliacao de um profissional."
   }
 ];
 
-export const coachPreviewMessages = coachSuggestions.map((item) => `${item.title}: ${item.body}`);
+export const coachPreviewMessages = coachSuggestions.map(
+  (item) => `${item.title}: ${item.body}`
+);
 
 export const exerciseLibrary: ExerciseLibraryItem[] = [
   {
@@ -204,7 +211,10 @@ export const exerciseLibrary: ExerciseLibraryItem[] = [
   }
 ];
 
-export const demoOnboarding: { answers: OnboardingAnswers; profile: UserProfile } = {
+export const demoOnboarding: {
+  answers: OnboardingAnswers;
+  profile: UserProfile;
+} = {
   answers: {
     goal: "Recuperacao e fortalecimento",
     trainingLocation: "home",

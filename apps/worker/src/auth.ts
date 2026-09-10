@@ -32,12 +32,14 @@ type JwtPayload = {
 
 let keyCache: { keys: Map<string, CryptoKey>; expiresAt: number } | null = null;
 
-function base64UrlToBytes(value: string): Uint8Array {
+// O retorno é anotado sobre ArrayBuffer (e não ArrayBufferLike) porque
+// crypto.subtle.verify só aceita BufferSource não compartilhado.
+function base64UrlToBytes(value: string): Uint8Array<ArrayBuffer> {
   const padded = value.replace(/-/g, "+").replace(/_/g, "/");
   const binary = atob(
     padded.padEnd(padded.length + ((4 - (padded.length % 4)) % 4), "=")
   );
-  const bytes = new Uint8Array(binary.length);
+  const bytes = new Uint8Array(new ArrayBuffer(binary.length));
   for (let index = 0; index < binary.length; index += 1) {
     bytes[index] = binary.charCodeAt(index);
   }

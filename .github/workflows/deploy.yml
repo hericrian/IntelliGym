@@ -1,0 +1,92 @@
+name: Deploy
+
+# Só publica depois que a CI passou, e só a partir da main. Assim um commit
+# que quebrou o typecheck ou os testes nunca chega em produção.
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  # Se dois commits caírem juntos, só o último vai ao ar.
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # workflow_dispatch não traz conclusion; por isso a segunda condição.
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm install
+
+      # Sem as credenciais o job explica o que falta em vez de falhar com um
+      # erro de autenticação do wrangler.
+      - name: Verificar credenciais da Cloudflare
+        id: check
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN não configurado — deploy ignorado."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ---------------------------------------------------------------- API
+      - name: Aplicar migrações no D1
+        if: steps.check.outputs.ready == 'true'
+        run: npx wrangler d1 migrations apply intelligym --remote
+        working-directory: apps/worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Publicar a API (Worker)
+        if: steps.check.outputs.ready == 'true'
+        run: npx wrangler deploy --minify --keep-vars
+        working-directory: apps/worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # ----------------------------------------------------------- Frontend
+      # As variáveis VITE_* são lidas em tempo de build, não em runtime:
+      # precisam existir aqui, não no painel do Pages.
+      - name: Build do frontend
+        if: steps.check.outputs.ready == 'true'
+        run: npm --workspace apps/web run build
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL || 'https://intelligym-api.hericrianamf.workers.dev' }}
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+
+      - name: Publicar o frontend (Pages)
+        if: steps.check.outputs.ready == 'true'
+        run: npx wrangler pages deploy apps/web/dist --project-name=intelligym --branch=main
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Confirmar que a API respondeu
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          sleep 10
+          curl --fail --show-error --silent \
+            https://intelligym-api.hericrianamf.workers.dev/health | tee /dev/stderr

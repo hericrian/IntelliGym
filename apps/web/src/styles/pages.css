@@ -11,8 +11,8 @@
   border: 1px solid var(--border);
   background: linear-gradient(
     165deg,
-    rgba(28, 14, 48, 0.92) 0%,
-    rgba(13, 7, 22, 0.98) 58%,
+    rgba(33, 29, 38, 0.92) 0%,
+    rgba(15, 13, 17, 0.98) 58%,
     var(--bg) 100%
   );
   box-shadow: var(--shadow-lg);
@@ -25,7 +25,7 @@
   background:
     radial-gradient(
       700px 380px at 12% 0%,
-      rgba(122, 62, 225, 0.16),
+      rgba(150, 73, 243, 0.1),
       transparent 70%
     ),
     radial-gradient(
@@ -87,11 +87,20 @@
 
 .hero-stage {
   position: relative;
-  min-height: clamp(320px, 42vw, 480px);
+  /* Altura explicita, nao min-height: o Canvas do react-three-fiber entra
+     como filho direto e o height:100% dele nao resolve contra um pai de
+     altura automatica — o canvas colapsaria. */
+  height: clamp(320px, 42vw, 480px);
   border-radius: var(--radius-xl);
   overflow: hidden;
   border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(27, 13, 47, 0.86), var(--bg));
+  background: linear-gradient(180deg, rgba(18, 16, 20, 0.85), var(--bg));
+}
+
+.hero-stage > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .hero-overlay {
@@ -129,10 +138,10 @@
   background:
     radial-gradient(
       circle at 50% 34%,
-      rgba(122, 62, 225, 0.16),
+      rgba(150, 73, 243, 0.13),
       transparent 42%
     ),
-    linear-gradient(180deg, rgba(19, 9, 33, 0.62), var(--bg));
+    linear-gradient(180deg, rgba(18, 16, 20, 0.6), var(--bg));
 }
 
 .hero-fallback__body,
@@ -152,9 +161,9 @@
   border-radius: 84px 84px 64px 64px;
   background: linear-gradient(
     180deg,
-    rgba(255, 252, 255, 0.94),
-    rgba(171, 118, 255, 0.54) 55%,
-    rgba(76, 28, 153, 0.3)
+    rgba(222, 212, 238, 0.9),
+    rgba(172, 110, 247, 0.45) 55%,
+    rgba(64, 23, 114, 0.25)
   );
   box-shadow: 0 28px 56px rgba(0, 0, 0, 0.3);
 }
@@ -179,7 +188,11 @@
   width: 440px;
   height: 440px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(122, 62, 225, 0.1), transparent 62%);
+  background: radial-gradient(
+    circle,
+    rgba(150, 73, 243, 0.08),
+    transparent 62%
+  );
 }
 
 /* Revelacao ao entrar na viewport. A classe --in vem de um
@@ -366,10 +379,10 @@
   background:
     radial-gradient(
       700px 320px at 100% 0%,
-      rgba(122, 62, 225, 0.13),
+      rgba(150, 73, 243, 0.1),
       transparent 70%
     ),
-    linear-gradient(180deg, var(--surface-2), var(--surface-1));
+    var(--surface-1);
 }
 
 .dashboard-hero__copy {
@@ -572,7 +585,7 @@
   padding: clamp(var(--space-5), 3vw, var(--space-6));
   background-image: radial-gradient(
     520px 300px at 50% 0%,
-    rgba(122, 62, 225, 0.1),
+    rgba(150, 73, 243, 0.08),
     transparent 70%
   );
 }

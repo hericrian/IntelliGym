@@ -22,6 +22,8 @@ afterAll(() => restoreFetch());
 beforeEach(() => {
   env = {
     DB: createTestDatabase() as unknown as D1Database,
+    ALLOWED_ORIGINS: `${ORIGIN},https://intelligym.pages.dev`,
+    ENVIRONMENT: "test",
     FIREBASE_PROJECT_ID: issuer.projectId
   };
 });
@@ -319,6 +321,8 @@ describe("banco ausente", () => {
   it("explica que o D1 não está configurado em vez de estourar 500", async () => {
     env = {
       DB: undefined as unknown as D1Database,
+      ALLOWED_ORIGINS: ORIGIN,
+      ENVIRONMENT: "test",
       FIREBASE_PROJECT_ID: issuer.projectId
     };
     const response = await call("/api/me", { auth: true });

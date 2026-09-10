@@ -22,7 +22,9 @@ def list_mock_workouts() -> list[WorkoutSummary]:
 
 
 def build_local_workout_summary(payload: WorkoutGenerationRequest) -> str:
-    equipment_label = ", ".join(payload.available_equipment) if payload.available_equipment else "peso corporal"
+    equipment_label = (
+        ", ".join(payload.available_equipment) if payload.available_equipment else "peso corporal"
+    )
 
     return (
         f"Plano inicial para objetivo {payload.objective}, nivel {payload.level}, "

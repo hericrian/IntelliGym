@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { AuthCard } from "../components/AuthCard";
+import { IconGoogle } from "../components/Icons";
 import { hasFirebaseConfig } from "../config/firebase";
 import { useAuth } from "../hooks/useAuth";
 
@@ -87,6 +88,7 @@ export function LoginPage() {
           navigate(redirectTo, { replace: true });
         }}
       >
+        <IconGoogle />
         {firebaseReady
           ? "Continuar com Google"
           : "Experimentar em modo demonstração"}

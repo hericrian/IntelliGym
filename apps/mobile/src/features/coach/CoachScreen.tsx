@@ -11,12 +11,22 @@ export function CoachScreen() {
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Assistente IA</Text>
       <Text style={styles.subtitle}>
-        Arquitetura preparada para chat, voz e ajustes de treino com validacoes de seguranca.
+        Arquitetura preparada para chat, voz e ajustes de treino com validacoes
+        de seguranca.
       </Text>
 
       {coachPreview.map((message, index) => (
-        <SectionCard key={message} title="Resposta simulada" subtitle="provider mock">
-          <Text style={[styles.body, index !== coachPreview.length - 1 ? styles.cardSpacing : null]}>
+        <SectionCard
+          key={message}
+          title="Resposta simulada"
+          subtitle="provider mock"
+        >
+          <Text
+            style={[
+              styles.body,
+              index !== coachPreview.length - 1 ? styles.cardSpacing : null
+            ]}
+          >
             {message}
           </Text>
         </SectionCard>

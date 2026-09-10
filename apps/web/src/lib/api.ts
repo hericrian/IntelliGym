@@ -2,8 +2,14 @@ import type { HealthCheckResponse } from "@intelligym/shared";
 
 import type { WorkoutPlan } from "../mocks/intelligym";
 
+// A variável de ambiente manda; o endereço fixo é rede de segurança para o
+// caso de o build de produção sair sem VITE_API_URL configurada.
+const productionApiUrl = "https://intelligym-api.hericrianamf.workers.dev";
 const apiBaseUrl = (
-  import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"
+  import.meta.env.VITE_API_URL ||
+  (window.location.hostname.endsWith(".pages.dev")
+    ? productionApiUrl
+    : "http://127.0.0.1:8787")
 ).replace(/\/$/, "");
 
 export async function fetchHealth(): Promise<HealthCheckResponse> {

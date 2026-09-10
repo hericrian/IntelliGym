@@ -23,19 +23,31 @@ export function HomeScreen() {
         <Image source={logoImage} style={styles.logo} />
       </View>
 
-      <SectionCard title={selectedWorkout.title} subtitle="Treino recomendado para hoje">
+      <SectionCard
+        title={selectedWorkout.title}
+        subtitle="Treino recomendado para hoje"
+      >
         <View style={styles.badges}>
           <Badge label={`${selectedWorkout.estimatedDurationMin} min`} />
           <Badge label={`${totalSets(selectedWorkout)} series`} />
-          <Badge label={`Dor ${painBadge(selectedWorkout.weeklyPainAverage)}`} tone="warning" />
+          <Badge
+            label={`Dor ${painBadge(selectedWorkout.weeklyPainAverage)}`}
+            tone="warning"
+          />
         </View>
         <Text style={styles.alert}>{selectedWorkout.safetyAlert}</Text>
-        <PrimaryButton label="Iniciar treino" onPress={() => setActiveTab("workout")} />
+        <PrimaryButton
+          label="Iniciar treino"
+          onPress={() => setActiveTab("workout")}
+        />
       </SectionCard>
 
       <StatGrid metrics={progress.metrics} />
 
-      <SectionCard title="Foco semanal" subtitle="Construido para progressao segura">
+      <SectionCard
+        title="Foco semanal"
+        subtitle="Construido para progressao segura"
+      >
         <View style={styles.badges}>
           {selectedWorkout.weeklyFocus.map((focus) => (
             <View key={focus} style={styles.badgeWrap}>
